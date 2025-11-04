@@ -1,0 +1,104 @@
+*HEADING
+axi symmetric
+************************************************************************
+*Include, input=Hyperelastic_2.0_0425_rubber_mod.inc, password=apolloatr
+*Include, input=Hyperelastic_2.0_0425_fabric.inc
+*Include, input=parameters.inc
+*Include, input=Rim_halves.inc
+*Include, input=mesh.inp
+**************************************************************************
+*SURFACE INTERACTION, NAME = RIM_TYRE
+1.0       ,
+*FRICTION, ELASTIC SLIP = 0.05
+0.0       , 0.0       ,0.0       ,0.0       
+*SURFACE INTERACTION, NAME = SELF_AB
+1.0       ,
+*FRICTION
+0.0       , 0.0       ,0.0       ,0.0       
+**-----------------------------------------------
+************ INITIAL CONDITIONS *****************
+*************************************************
+*INITIAL CONDITIONS, TYPE=TEMPERATURE
+WHOLE_REINFORCEMENT_N, 160.
+******************************************************************************
+** STEP1: POSITIONING RIM
+******************************************************************************
+*Step, Nlgeom=yes, Name=Position_Rim
+POSITIONING_RIM
+*Static
+0.1,1.0
+*contact interference, shrink
+UPPER_RIM_SLAVE_SURFACE, UPPER_RIM_MASTER_SURFACE
+LOWER_RIM_SLAVE_SURFACE, LOWER_RIM_MASTER_SURFACE
+*model change, remove, type=contact pair
+UPPER_RIM_SLAVE_SURFACE, UPPER_RIM_MASTER_SURFACE
+LOWER_RIM_SLAVE_SURFACE, LOWER_RIM_MASTER_SURFACE
+*Boundary, op=new
+SYBC,2,2
+SYBC,5,5
+LOWER_RIM_REFERENCE_POINT,2,2, <rimdisp_minus>
+LOWER_RIM_REFERENCE_POINT,1,1
+LOWER_RIM_REFERENCE_POINT,3,6
+UPPER_RIM_REFERENCE_POINT,2,2, <rimdisp_plus>
+UPPER_RIM_REFERENCE_POINT,1,1
+UPPER_RIM_REFERENCE_POINT,3,6
+*Output,field, ,VAR=PRESELECT
+*Element output,VAR=PRESELECT
+*NODE OUTPUT
+ U, COORD
+*Contact output
+cstress, cdisp
+**
+*End step
+*************************************************
+** STEP2: COOLING STEP ******
+*************************************************
+*STEP, NAME=COOLING, NLGEOM=YES, UNSYM=YES, CONVERT SDI=YES
+COOLING
+*STATIC
+0.1, 1,
+*BOUNDARY
+SYBC, 2,2
+SYBC, 5,5
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*TEMPERATURE
+WHOLE_REINFORCEMENT_N, 30.
+*RESTART, WRITE, FREQUENCY=100
+*OUTPUT, FIELD, VARIABLE=PRESELECT, FREQUENCY=100
+*ELEMENT OUTPUT, REBAR, DIRECTIONS=YES
+E, S, IVOL
+*NODE OUTPUT
+ U, COORD
+*OUTPUT, HISTORY, VARIABLE=PRESELECT
+*END STEP
+******************************************************************************
+** STEP3: RIM MOUNTING
+******************************************************************************
+*STEP, Nlgeom=yes, Name=RIM_MOUNTING
+RIM_MOUNTING
+*Static
+0.05,1.0
+*Model change, add, type=contact pair
+UPPER_RIM_SLAVE_SURFACE, UPPER_RIM_MASTER_SURFACE
+LOWER_RIM_SLAVE_SURFACE, LOWER_RIM_MASTER_SURFACE
+*Boundary, op=new
+SYBC,2,2
+SYBC,5,5
+LOWER_RIM_REFERENCE_POINT,2,2, 0.0
+LOWER_RIM_REFERENCE_POINT,1,1
+LOWER_RIM_REFERENCE_POINT,3,6
+UPPER_RIM_REFERENCE_POINT,2,2, 0.0
+UPPER_RIM_REFERENCE_POINT,1,1
+UPPER_RIM_REFERENCE_POINT,3,6
+*End step
+******************************************************
+** STEP4: INFLATION
+******************************************************
+*STEP, NAME=INFLATION, NLGEOM=YES, UNSYMM=YES
+INFLATION ANALYSIS
+*STATIC
+.1, 1.
+*CONTROLS, ANALYSIS=DISCONTINUOUS	
+*DSLOAD
+INNER_PRESSURE_SURFACE, P, <inflation_pressure2>
+*END STEP

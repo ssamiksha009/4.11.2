@@ -1,0 +1,635 @@
+/* ============================================
+   COMMON HEADER STYLES - DASHBOARD THEME
+   ============================================ */
+
+/* CSS Variables for Consistency with Dashboard */
+:root {
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+    --secondary-color: #8b5cf6;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f1f5f9;
+    
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-light: #94a3b8;
+    
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* ============================================
+   MAIN HEADER
+   ============================================ */
+
+.main-header {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    height: 70px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-xl);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* ============================================
+   LOGO CONTAINER
+   ============================================ */
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    height: 100%;
+    padding: 10px 0;
+}
+
+.logo {
+    height: 45px;
+    width: auto;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    filter: brightness(1);
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* ============================================
+   HEADER TITLE
+   ============================================ */
+
+/* Enhanced header title styling */
+.header-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* ============================================
+   BUTTON CONTAINER
+   ============================================ */
+
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
+/* ============================================
+   HOME BUTTON
+   ============================================ */
+
+.home-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.home-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary-color));
+    opacity: 0;
+    transition: var(--transition-normal);
+}
+
+.home-button:hover {
+    background: rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.home-button:hover::before {
+    opacity: 0.2;
+}
+
+.home-button i {
+    font-size: 1.2rem;
+    transition: var(--transition-normal);
+    position: relative;
+    z-index: 1;
+}
+
+.home-button:hover i {
+    transform: scale(1.1);
+    color: var(--primary-light);
+}
+
+.home-button:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   USER DROPDOWN
+   ============================================ */
+
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary-color));
+    opacity: 0;
+    transition: var(--transition-normal);
+}
+
+.user-button:hover {
+    background: rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.user-button:hover::before {
+    opacity: 0.2;
+}
+
+.user-button i {
+    font-size: 1.2rem;
+    transition: var(--transition-normal);
+    position: relative;
+    z-index: 1;
+}
+
+.user-button:hover i {
+    transform: scale(1.1);
+    color: var(--primary-light);
+}
+
+.user-button:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   DROPDOWN CONTENT
+   ============================================ */
+
+.dropdown-content {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 12px);
+    background: var(--bg-secondary);
+    min-width: 240px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-normal);
+    border: 1px solid var(--border-color);
+    z-index: 1001;
+}
+
+.user-dropdown:hover .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 16px;
+    width: 12px;
+    height: 12px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    transform: rotate(45deg);
+}
+
+.dropdown-content a {
+    color: var(--text-primary);
+    padding: 14px 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition-normal);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a i {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    transition: var(--transition-normal);
+    width: 20px;
+    text-align: center;
+}
+
+.dropdown-content a:hover {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+    color: var(--primary-color);
+    padding-left: 24px;
+}
+
+.dropdown-content a:hover i {
+    transform: scale(1.1);
+    color: var(--secondary-color);
+}
+
+/* Logout link special styling */
+.dropdown-content a[href*="login"],
+.dropdown-content a[onclick*="logout"] {
+    color: var(--danger-color);
+    border-top: 2px solid var(--border-color);
+}
+
+.dropdown-content a[href*="login"] i,
+.dropdown-content a[onclick*="logout"] i {
+    color: var(--danger-color);
+}
+
+.dropdown-content a[href*="login"]:hover,
+.dropdown-content a[onclick*="logout"]:hover {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.08));
+    color: var(--danger-color);
+}
+
+/* ============================================
+   COMPLETE BUTTON
+   ============================================ */
+
+.complete-button {
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.complete-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, #059669, var(--success-color));
+}
+
+.complete-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.complete-button:disabled {
+    background: var(--bg-tertiary);
+    color: var(--text-light);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.complete-button i {
+    font-size: 1rem;
+}
+
+/* ============================================
+   ADDITIONAL HEADER BUTTONS (if needed)
+   ============================================ */
+
+.header-btn {
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.header-btn i {
+    font-size: 1rem;
+}
+
+/* Primary variant */
+.header-btn.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+}
+
+.header-btn.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* ============================================
+   HELP BUTTON (from index.html)
+   ============================================ */
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.icon-btn i {
+    transition: var(--transition-normal);
+}
+
+.icon-btn:hover i {
+    transform: scale(1.1);
+    color: var(--primary-light);
+}
+
+/* Logout button variant */
+.icon-btn.logout-btn {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.icon-btn.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.icon-btn.logout-btn:hover i {
+    color: #fca5a5;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media screen and (max-width: 1024px) {
+    .main-header {
+        padding: 0 20px;
+    }
+
+    .header-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .main-header {
+        height: auto;
+        flex-direction: column;
+        padding: 16px 20px;
+        gap: 12px;
+    }
+
+    .logo-container {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 0;
+    }
+
+    .header-title {
+        position: static;
+        transform: none;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .button-container {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .dropdown-content {
+        min-width: 200px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .main-header {
+        padding: 12px 16px;
+    }
+
+    .logo {
+        height: 35px;
+    }
+
+    .header-title {
+        font-size: 1rem;
+        letter-spacing: 0.3px;
+    }
+
+    .home-button,
+    .user-button,
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .home-button i,
+    .user-button i,
+    .icon-btn i {
+        font-size: 1rem;
+    }
+
+    .complete-button {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+
+    .dropdown-content {
+        min-width: 180px;
+    }
+
+    .dropdown-content a {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   ANIMATION KEYFRAMES
+   ============================================ */
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+/* Focus visible for keyboard navigation */
+.home-button:focus-visible,
+.user-button:focus-visible,
+.icon-btn:focus-visible,
+.complete-button:focus-visible,
+.header-btn:focus-visible {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+/* Remove focus outline for mouse users */
+.home-button:focus:not(:focus-visible),
+.user-button:focus:not(:focus-visible),
+.icon-btn:focus:not(:focus-visible),
+.complete-button:focus:not(:focus-visible),
+.header-btn:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .main-header {
+        border-bottom: 2px solid white;
+    }
+
+    .dropdown-content {
+        border: 2px solid var(--text-primary);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+    .main-header {
+        background: white;
+        color: black;
+        box-shadow: none;
+        border-bottom: 2px solid black;
+    }
+
+    .button-container,
+    .dropdown-content {
+        display: none;
+    }
+
+    .header-title {
+        color: black;
+        -webkit-text-fill-color: black;
+    }
+}

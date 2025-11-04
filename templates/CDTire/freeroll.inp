@@ -1,0 +1,74 @@
+*HEADING
+ Friction Change - Dynamic
+ restart from brac and traction
+ UNITS: N, MM
+*RESTART,READ,WRITE,END STEP
+************************************************************************
+******************************************
+*NSET, NSET=WHOLE_TYRE
+WHOLE_RUBBER_N
+WHOLE_REINFORCEMENT_N
+************************************************************************
+************************************************************************
+*************** BRAKING
+************************************************************************
+*STEP,INC=300,NLGEOM=YES,UNSYMM=YES
+ 5:  BRAKING
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.1, 1.0
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+*CHANGE FRICTION,INTERACTION=ROAD_TYRE
+*FRICTION,SLIP=0.02
+ 1.0
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<ini_vel>
+ RIM_REFERENCE_POINT,<ini_vel>
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , -<speed>
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S,IVOL
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT,NSET=RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+************************************************************************
+*STEP,INC=300,NLGEOM=YES,UNSYMM=YES,EXTRAPOLATION=NO
+ 6:  STRAIGHT LINE ROLLING  (Free Rolling)
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.01, 1.0, 1.e-6, 0.01
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+************************************************
+*TRANSPORT VELOCITY,USER
+ WHOLE_TYRE,
+ RIM_REFERENCE_POINT,
+*NODE PRINT,FREQ=0
+*EL PRINT,FREQ=0
+*NODE FILE,NSET=RIM_REFERENCE_POINT
+ RF,
+*OUTPUT,FIELD,FREQ=1
+*ELEMENT OUTPUT
+ S,LE,IVOL
+*NODE OUTPUT
+ U,V,A
+*CONTACT OUTPUT,VAR=PRE
+*OUTPUT,HISTORY,FREQ=1
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+ U, RF, UR1,UR2,UR3,RM1,RM2,RM3
+*NODE OUTPUT, NSET=RIM_REFERENCE_POINT
+ U, RF, UR1,UR2,UR3,RM1,RM2,RM3
+*ENERGY OUTPUT,VAR=PRE
+*END STEP

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project History - Apollo Tyres R&D</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/history.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- <script src="/js/common.js"></script> -->
+</head>
+
+<body>
+    <!-- Common App Header -->
+    <header class="main-header">
+    <div class="logo-container">
+        <img src="/images/Apollo-Tyres-Logo.png" alt="Apollo Tyres Logo" class="logo" onclick="window.location.href='/index.html'" style="cursor: pointer;">
+    </div>
+    <h1 class="header-title">Tyre Virtualization Tool</h1>
+    <nav class="header-nav">
+        <button class="icon-btn" title="Home" onclick="window.location.href='/user-dashboard.html'">
+            <i class="fas fa-home"></i>
+        </button>
+        <button class="icon-btn" title="Back" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="icon-btn" id="refreshBtn" title="Refresh" onclick="refreshPage()">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="icon-btn" title="Help" onclick="window.open('/components/help.pdf', '_blank')">
+            <i class="fas fa-question-circle"></i>
+        </button>
+        <button class="icon-btn logout-btn" title="Logout" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </nav>
+</header>
+    <main>
+        <h2 class="page-title">Project History</h2>
+        <div class="history-container">
+            <div class="table-header">
+                <div class="search-and-new">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="search-box" placeholder="Search projects...">
+                    </div>
+                    <button id="newRequestBtn" class="new-request-button">
+                        <i class="fas fa-plus"></i> New Request
+                    </button>
+                </div>
+                <!-- <div class="date-filters">
+                    <div class="date-filter">
+                        <label for="dateCreated">Date Created:</label>
+                        <input type="date" id="dateCreated" class="date-input">
+                    </div>
+                    <div class="date-filter">
+                        <label for="dateCompleted">Date Completed:</label>
+                        <input type="date" id="dateCompleted" class="date-input">
+                    </div>
+                    <button id="filterBtn" class="filter-button">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div> -->
+            </div>
+
+            <div id="loadingSpinner" class="loading-spinner">Loading...</div>
+            <div id="errorMessage" class="error-message"></div>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Project ID</th>
+                        <th>Project Name</th>
+                        <th>Region</th>
+                        <th>Department</th>
+                        <th>Tyre Size</th>
+                        <th>Protocol</th>
+                        <th>Date Created</th>
+                        <th>Status</th>
+                        <th>Date Completed</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody"></tbody>
+            </table>
+            <div id="noDataMessage" class="no-data-message" style="display: none;">
+                No project history available
+            </div>
+        </div>
+    </main>
+    <script>
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = '/login.html';
+        }
+
+        document.getElementById('newRequestBtn').onclick = function () {
+            window.location.href = '/index.html';
+        };
+
+        // Fetch project history data from the server
+        // function fetchProjectHistory() {
+        //     const xhr = new XMLHttpRequest();
+        //     xhr.open('GET', '/api/project-history', true);
+        //     xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('authToken'));
+        //     xhr.onload = function () {
+        //         if (xhr.status === 200) {
+        //             const response = JSON.parse(xhr.responseText);
+        //             if (response.success) {
+        //                 const projects = response.projects;
+        //                 const tableBody = document.getElementById('historyTableBody');
+        //                 tableBody.innerHTML = '';
+
+        //                 if (projects.length === 0) {
+        //                     document.getElementById('noDataMessage').style.display = 'block';
+        //                 } else {
+        //                     document.getElementById('noDataMessage').style.display = 'none';
+        //                     projects.forEach(project => {
+        //                         const row = document.createElement('tr');
+        //                         row.innerHTML = `
+        //                             <td>${project.project_name}</td>
+        //                             <td>${project.region}</td>
+        //                             <td>${project.department}</td>
+        //                             <td>${project.tyre_size}</td>
+        //                             <td>${project.protocol}</td>
+        //                             <td>${new Date(project.date_created).toLocaleDateString()}</td>
+        //                             <td>${project.status}</td>
+        //                             <td>${project.date_completed ? new Date(project.date_completed).toLocaleDateString() : ''}</td>
+        //                         `;
+        //                         tableBody.appendChild(row);
+        //                     });
+        //                 }
+        //             } else {
+        //                 document.getElementById('errorMessage').innerText = response.message;
+        //             }
+        //         } else {
+        //             document.getElementById('errorMessage').innerText = 'Error fetching project history';
+        //         }
+        //         document.getElementById('loadingSpinner').style.display = 'none';
+        //     };
+
+        //     xhr.onerror = function () {
+        //         document.getElementById('errorMessage').innerText = 'Request failed';
+        //         document.getElementById('loadingSpinner').style.display = 'none';
+        //     };
+
+        //     xhr.send();
+        // }
+
+        // // Initial fetch
+        // fetchProjectHistory();
+    </script>
+    <script src="/js/history.js"></script>
+
+<script>
+function refreshPage() {
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('refreshing');
+    setTimeout(() => {
+        window.location.reload();
+    }, 300); // Small delay for visual feedback
+}
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Monitor - Apollo Tyres Manager</title>
+    <link rel="stylesheet" href="/css/activity-monitor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- ============================================
+         SIDEBAR NAVIGATION (Same as Manager Dashboard)
+         ============================================ -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <h2>Manager Portal</h2>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="/manager-dashboard.html">
+                        <i class="fas fa-columns"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="/activity-monitor.html">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Activity Monitor</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/all-projects.html">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>All Projects</span>
+                        <span class="nav-badge" id="totalProjectsNav">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/activity-log.html">
+                        <i class="fas fa-list-check"></i>
+                        <span>System Logs</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/index.html">
+                        <i class="fas fa-cogs"></i>
+                        <span>Tyre Virtualization</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/reset-password.html">
+                        <i class="fas fa-key"></i>
+                        <span>Reset Password</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/components/help.pdf" target="_blank">
+                        <i class="fas fa-circle-question"></i>
+                        <span>Help</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="manager-profile">
+                <div class="manager-avatar" id="managerAvatar">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="manager-info">
+                    <p class="manager-name" id="managerName">Loading...</p>
+                    <p class="manager-role">Manager</p>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ============================================
+         MAIN CONTENT AREA
+         ============================================ -->
+    <main class="main-content">
+        <!-- Top Navigation Bar -->
+        <header class="top-bar">
+            <div class="breadcrumbs">
+                <i class="fas fa-chart-line"></i>
+                <span>Activity Monitor</span>
+            </div>
+            <div class="top-bar-actions">
+                <button class="action-btn btn-secondary" id="refreshBtn" title="Refresh Data">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+                    <button class="action-btn btn-secondary" id="userMenuBtn" title="User Information">
+        <i class="fas fa-bars"></i>
+    </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+            <!-- Page Header -->
+            <section class="page-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-chart-line"></i> Activity Monitor</h1>
+                    <p>Real-time system activity tracking and analytics</p>
+                </div>
+                <div class="header-meta">
+                    <div class="last-updated">
+                        <i class="fas fa-clock"></i>
+                        <span>Last updated: <strong id="lastUpdated">Never</strong></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- KPI Cards Section -->
+            <section class="kpi-cards-grid">
+                <div class="kpi-card kpi-total-activities">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Total Activities</p>
+                        <h3 class="kpi-value" id="totalActivities">0</h3>
+                        <p class="kpi-change" id="totalActivitiesChange">
+                            <i class="fas fa-minus"></i> Loading...
+                        </p>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-active-users">
+                    <div class="kpi-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Active Users Today</p>
+                        <h3 class="kpi-value" id="activeUsersToday">0</h3>
+                        <p class="kpi-change" id="activeUsersChange">
+                            <i class="fas fa-minus"></i> Last 24 hours
+                        </p>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-projects-modified">
+                    <div class="kpi-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Projects Modified</p>
+                        <h3 class="kpi-value" id="projectsModified">0</h3>
+                        <p class="kpi-change positive" id="projectsModifiedChange">
+                            <i class="fas fa-arrow-up"></i> This week
+                        </p>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-failed-actions">
+                    <div class="kpi-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Failed Actions</p>
+                        <h3 class="kpi-value" id="failedActions">0</h3>
+                        <p class="kpi-change negative" id="failedActionsChange">
+                            <i class="fas fa-arrow-down"></i> Last 7 days
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ✅ Charts Section: Activity Trend (70%) + Activity Types (30%) -->
+<section class="charts-section">
+    <!-- Activity Trend Chart (70% width) -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3><i class="fas fa-chart-line"></i> Activity Trend (Last 30 Days)</h3>
+            <button class="btn-icon" onclick="refreshActivityTrendChart()" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        <div class="chart-body">
+            <canvas id="activityTrendChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Activity Types Chart (30% width) -->
+    <!-- Activity Types Chart -->
+<div class="chart-card">
+    <div class="chart-header">
+        <h3><i class="fas fa-chart-pie"></i> Activity Types Distribution</h3>
+        <button class="btn-icon" onclick="refreshActivityTypesChart()" title="Refresh">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+    <div class="chart-body">
+        <canvas id="activityTypesChart"></canvas>
+    </div>
+</div>
+</section>
+
+            <!-- Filters Section -->
+            <section class="filters-section">
+                <div class="filters-header">
+                    <h3><i class="fas fa-filter"></i> Filter Activities</h3>
+                    <button class="btn-clear-filters" id="clearFiltersBtn">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label><i class="fas fa-search"></i> Search</label>
+                        <input type="text" id="searchInput" placeholder="Search by user, action, description..." autocomplete="off">
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-calendar"></i> Date Range</label>
+                        <select id="dateRangeFilter">
+                            <option value="all">All Time</option>
+                            <option value="today" selected>Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="last7days">Last 7 Days</option>
+                            <option value="last30days">Last 30 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-user"></i> User</label>
+                        <select id="userFilter">
+                            <option value="all">All Users</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-tag"></i> Activity Type</label>
+                        <select id="activityTypeFilter">
+                            <option value="all">All Types</option>
+                            <option value="Login">Login</option>
+                            <option value="Logout">Logout</option>
+                            <option value="Project">Project</option>
+                            <option value="Password Reset">Password Reset</option>
+                            <option value="User Management">User Management</option>
+                            <option value="System">System</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-check-circle"></i> Status</label>
+                        <select id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="success">Success</option>
+                            <option value="failed">Failed</option>
+                            <option value="warning">Warning</option>
+                        </select>
+                    </div>
+                    <div class="filter-group filter-actions">
+                        <button class="btn-apply-filters" id="applyFiltersBtn">
+                            <i class="fas fa-filter"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Date Range Picker (Hidden by default) -->
+                <div class="custom-date-range" id="customDateRange" style="display: none;">
+                    <div class="date-inputs">
+                        <div class="date-input-group">
+    <label>From:</label>
+    <input type="date" id="startDate" onchange="document.getElementById('applyFiltersBtn').focus()">
+</div>
+<div class="date-input-group">
+    <label>To:</label>
+    <input type="date" id="endDate" onchange="document.getElementById('applyFiltersBtn').focus()">
+</div>
+                    </div>
+                </div>
+            </section>
+
+           <!-- ✅ Activity Table Section (Renamed) -->
+<section class="activity-table-section">
+    <div class="table-header">
+        <h3><i class="fas fa-list"></i> Engineer Activity Log</h3>
+        <div class="table-info">
+            <span id="tableInfo">Showing 0 activities</span>
+        </div>
+    </div>
+                <div class="table-container">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Time</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Project</th>
+                                <th>IP Address</th>
+                                <th>Browser</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityTableBody">
+                            <tr>
+    <td colspan="8" class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading activities...</p>
+    </td>
+</tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        <span id="paginationInfo">Page 1 of 1</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="btn-page" id="firstPageBtn" disabled>
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button class="btn-page" id="prevPageBtn" disabled>
+                            <i class="fas fa-angle-left"></i> Previous
+                        </button>
+                        <div class="page-numbers" id="pageNumbers"></div>
+                        <button class="btn-page" id="nextPageBtn">
+                            Next <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button class="btn-page" id="lastPageBtn">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                    <div class="items-per-page">
+                        <label>Items per page:</label>
+                        <select id="itemsPerPage">
+                            <option value="10">10</option>
+                            <option value="25" selected>25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ============================================
+         ACTIVITY DETAILS MODAL
+         ============================================ -->
+    <div class="modal-overlay" id="activityDetailsModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> Activity Details</h3>
+                <button class="modal-close" onclick="closeActivityDetailsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalActivityDetails">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading details...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeActivityDetailsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+     USER INFORMATION MODAL
+     ============================================ -->
+<!-- ============================================
+     USER INFORMATION SIDEBAR
+     ============================================ -->
+<div class="sidebar-overlay" id="userInfoOverlay" onclick="closeUserInfoSidebar()"></div>
+<aside class="user-info-sidebar" id="userInfoSidebar">
+    <div class="sidebar-header">
+        <h3><i class="fas fa-user-circle"></i> User Information</h3>
+        <button class="sidebar-close" onclick="closeUserInfoSidebar()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="sidebar-body" id="userInfoContent">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading user information...</p>
+        </div>
+    </div>
+</aside>
+
+    <script src="/js/activity-monitor.js"></script>
+</body>
+</html>

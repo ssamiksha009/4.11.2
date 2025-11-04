@@ -1,0 +1,40 @@
+*HEADING
+Lateral stiffness
+old job= rev_p1_l1
+************************************************************************ 
+*RESTART,READ,WRITE,END STEP
+*************************************************************
+** STEP:  CHANGE FRICTION
+********************************************************
+*STEP, NAME=FRICTION CHANGE, inc=1000, NLGEOM=YES, UNSYM=YES
+ 1) FRICTION CHANGE
+*STATIC
+ 1.0, 1.0
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*CHANGE FRICTION, INTERACTION=ROAD_TYRE
+*FRICTION
+ 1.0
+*END STEP
+************************************
+********************************************************  
+** STEP:  LATERAL DISPLACEMENT
+********************************************************
+*Step, name=LATERAL_DISPLACEMENT, nlgeom=YES, unsymm=YES, inc=10000
+ 2) LATERAL_DISPLACEMENT
+*Static
+0.001, 1.0, ,0.05
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*Boundary
+ROAD_REFERENCE_POINT,2,2, 30
+*OUTPUT, HISTORY, FREQUENCY=1
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+U, CF, RF
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+RF
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+RF
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+CAREA
+*ENERGY OUTPUT, VAR=PRE
+*End Step
+************************************

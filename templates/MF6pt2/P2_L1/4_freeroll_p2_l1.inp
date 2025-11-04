@@ -1,0 +1,44 @@
+*HEADING
+ Friction Change - Dynamic
+ restart from brac and traction
+ UNITS: N, MM
+*RESTART,READ,WRITE,END STEP
+************************************************************************
+*Include, input=parameters.inc
+************************************************************************
+*parameter
+freeroll_velocity=61.0564459672156	
+************************************************************************
+*STEP, NAME=Freeroll,INC=300,NLGEOM=YES,UNSYMM=YES
+ FRICTION CHANGE - FR
+*STEADY STATE TRANSPORT,INERTIA=YES
+0.1, 1.0
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+********************************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<freeroll_velocity>						
+ LOWER_RIM_REFERENCE_POINT,<freeroll_velocity>							
+ UPPER_RIM_REFERENCE_POINT,<freeroll_velocity>									
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , <speed>
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+ U, RF, V
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+ U, RF, V
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+*****************************

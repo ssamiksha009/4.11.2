@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Tyres R&D</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+
+</head>
+
+<body>
+    <!-- Common App Header -->
+    <header class="main-header">
+    <div class="logo-container">
+        <img src="/images/Apollo-Tyres-Logo.png" alt="Apollo Tyres Logo" class="logo" onclick="window.location.href='/index.html'" style="cursor: pointer;">
+    </div>
+    <h1 class="header-title">Tyre Virtualization Tool</h1>
+    <nav class="header-nav">
+        <button class="icon-btn" title="Home" onclick="window.location.href='/user-dashboard.html'">
+            <i class="fas fa-home"></i>
+        </button>
+        <button class="icon-btn" title="Back" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="icon-btn" id="refreshBtnIndex" title="Refresh" onclick="refreshPageIndex()">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="icon-btn" title="Help" onclick="window.open('/components/help.pdf', '_blank')">
+            <i class="fas fa-question-circle"></i>
+        </button>
+        <button class="icon-btn logout-btn" title="Logout" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </nav>
+</header>
+
+    <main>
+        <section class="welcome-banner">
+            <span class="banner-icon"><i class="fas fa-tachometer-alt"></i></span>
+            <div class="banner-text">
+                Welcome to the Apollo Tyres R&D Virtualization Dashboard.<br>
+                <span class="banner-subtext">Start a new project or view your project history.</span>
+            </div>
+        </section>
+        <!-- Only Project History button, placed below the banner -->
+
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-plus-circle"></i> New Project Request</h2>
+            <form id="projectForm" autocomplete="off">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="project"><i class="fas fa-project-diagram"></i> Project</label>
+                        <input type="text" id="project" name="project" placeholder="Enter Project" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="region"><i class="fas fa-globe-americas"></i> Region</label>
+                        <select id="region" name="region" required>
+                            <option value="">Select Region</option>
+                            <option value="APMEA">APMEA</option>
+                            <option value="EUROPE">EUROPE</option>
+                            <option value="USA">USA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="department"><i class="fas fa-building"></i> Department</label>
+                        <select id="department" name="department" required>
+                            <option value="">Select Department</option>
+                            <option value="PCR">PCR</option>
+                            <option value="TBR">TBR</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tyreSize"><i class="fas fa-ruler-combined"></i> Tyre Size</label>
+                        <input type="text" id="tyreSize" name="tyreSize" placeholder="Enter Tyre Size" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="protocol"><i class="fas fa-file-code"></i> Protocol</label>
+                        <select id="protocol" name="protocol" required>
+                            <option value="">Select Protocol</option>
+                            <option value="MF62">MF 6.2</option>
+                            <option value="MF52">MF 5.2</option>
+                            <option value="FTire">FTire</option>
+                            <option value="CDTire">CDTire</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="errorMessage" class="error-message"></div>
+                <div class="submit-container">
+                    <button id="submitBtn" class="submit-button" type="button">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                </div>
+            </form>
+        </section>
+        <!-- Centered and wider Project History button -->
+        <div class="quick-links">
+            <a href="/history.html" class="quick-link wide-link">
+                <i class="fas fa-history"></i> Project History
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <span>&copy; 2025 Apollo Tyres R&D. All rights reserved.</span>
+    </footer>
+    <script src="/js/auth-check.js"></script>
+    <script src="/js/index.js"></script>
+    <script>
+    function logout() {
+        localStorage.removeItem('authToken');
+        window.location.href = '/login.html';
+    }
+    </script>
+    <script>
+function refreshPageIndex() {
+    const btn = document.getElementById('refreshBtnIndex');
+    if (btn) {
+        btn.classList.add('refreshing');
+        setTimeout(() => {
+            window.location.reload();
+        }, 300); // Small delay for visual feedback
+    }
+}
+</script>
+</body>
+
+</html>

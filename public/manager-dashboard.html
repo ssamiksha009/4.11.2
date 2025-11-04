@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard - Apollo Tyres</title>
+    <link rel="stylesheet" href="/css/manager-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <h2>Manager Portal</h2>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active">
+                    <a href="manager-dashboard.html">
+                        <i class="fas fa-columns"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+    <a href="activity-monitor.html" onclick="scrollToSection('activity-monitor')">
+        <i class="fas fa-chart-line"></i>
+        <span>Activity Monitor</span>
+    </a>
+</li>
+                <li>
+                    <a href="/all-projects.html">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>All Projects</span>
+                        <span class="nav-badge" id="totalProjectsNav">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/activity-log.html">
+                        <i class="fas fa-list-check"></i>
+                        <span>System Logs</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/index.html">
+                        <i class="fas fa-cogs"></i>
+                        <span>Tyre Virtualization</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/reset-password.html">
+                        <i class="fas fa-key"></i>
+                        <span>Reset Password</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/components/help.pdf" target="_blank">
+                        <i class="fas fa-circle-question"></i>
+                        <span>Help</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="manager-profile">
+                <div class="manager-avatar" id="managerAvatar">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="manager-info">
+                    <p class="manager-name" id="managerName">Loading...</p>
+                    <p class="manager-role">Manager</p>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation Bar -->
+        <header class="top-bar">
+            <div class="global-search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" id="globalSearchInput" placeholder="Search users, projects, activities..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+</div>
+            <div class="top-bar-actions">
+                <button class="action-btn btn-secondary" onclick="window.location.href='/all-projects.html'">
+                    <i class="fas fa-folder-open"></i>
+                    All Projects
+                </button>
+                <button class="action-btn btn-primary" onclick="scrollToSection('user-management')">
+                    <i class="fas fa-user-plus"></i>
+                    Add Engineer
+                </button>
+                <button class="refresh-btn" id="refreshDashboardBtn" title="Refresh Dashboard">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+            <!-- Welcome Banner -->
+            <section class="manager-welcome">
+                <div class="manager-welcome-content">
+                    <h1>Welcome, <span id="welcomeManagerName">Manager</span>! 👋</h1>
+                    <p>Monitor system performance and manage your engineering team.</p>
+                </div>
+                <div class="manager-quick-actions">
+                    <button class="action-btn btn-primary" onclick="scrollToSection('user-management')">
+                        <i class="fas fa-user-plus"></i> Add Engineer
+                    </button>
+<button class="action-btn btn-secondary" onclick="window.location.href='/history.html?all=1'">
+    <i class="fas fa-folder-open"></i> View Projects
+</button>
+                </div>
+            </section>
+
+            <!-- Manager KPI Cards -->
+            <section class="manager-stats-grid">
+                <div class="manager-stat-card stat-card-users">
+                    <div class="manager-stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="manager-stat-content">
+                        <p class="manager-stat-label">Total Engineers</p>
+                        <h3 class="manager-stat-value" id="totalEngineers">0</h3>
+                        <p class="manager-stat-change positive" id="totalEngineersChange">
+                            <i class="fas fa-arrow-up"></i> Loading...
+                        </p>
+                    </div>
+                </div>
+
+                <div class="manager-stat-card stat-card-projects">
+                    <div class="manager-stat-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="manager-stat-content">
+                        <p class="manager-stat-label">Total Projects</p>
+                        <h3 class="manager-stat-value" id="totalProjects">0</h3>
+                        <p class="manager-stat-change positive" id="totalProjectsChange">
+                            <i class="fas fa-arrow-up"></i> Loading...
+                        </p>
+                    </div>
+                </div>
+
+                <div class="manager-stat-card stat-card-active">
+                    <div class="manager-stat-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="manager-stat-content">
+                        <p class="manager-stat-label">Active Users (7d)</p>
+                        <h3 class="manager-stat-value" id="activeEngineers">0</h3>
+                        <p class="manager-stat-change" id="activeEngineersChange">
+                            <i class="fas fa-minus"></i> Last 7 days
+                        </p>
+                    </div>
+                </div>
+
+                <div class="manager-stat-card stat-card-system">
+                    <div class="manager-stat-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="manager-stat-content">
+                        <p class="manager-stat-label">Completion Rate</p>
+                        <h3 class="manager-stat-value" id="completionRate">0%</h3>
+                        <p class="manager-stat-change positive" id="completionRateChange">
+                            <i class="fas fa-arrow-up"></i> System Health
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <!-- User Activity Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> User Activity Trends</h3>
+                        <button class="btn-icon" onclick="refreshUserActivityChart()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="userActivityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Project Distribution Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Project Distribution</h3>
+                        <button class="btn-icon" onclick="refreshProjectDistributionChart()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="projectDistributionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Protocol Usage Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-layer-group"></i> Protocol Usage</h3>
+                        <button class="btn-icon" onclick="refreshProtocolUsageChart()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="protocolUsageChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Team Performance Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Team Performance</h3>
+                        <button class="btn-icon" onclick="refreshTeamPerformanceChart()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="teamPerformanceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Two Column Layout: User Management + Future KPI -->
+<section class="two-column-kpi-section">
+    <!-- Left Column: User Management KPI -->
+    <div class="user-management-kpi" id="user-management">
+        <div class="kpi-header">
+            <h2><i class="fas fa-users-cog"></i> User Management</h2>
+            <input type="text" id="searchUsers" class="search-input-small" placeholder="Search engineers..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+
+        <!-- Add Engineer Form -->
+        <div class="add-user-form-compact">
+            <input 
+                type="text" 
+                id="newEngineerName" 
+                class="form-input-compact" 
+                placeholder="Name" 
+                required 
+                autocomplete="off"
+                autocorrect="off" 
+                autocapitalize="off" 
+                spellcheck="false">
+            
+            <input 
+                type="email" 
+                id="newEngineerEmail" 
+                class="form-input-compact" 
+                placeholder="Email" 
+                required 
+                autocomplete="off"
+                autocorrect="off" 
+                autocapitalize="off" 
+                spellcheck="false">
+            
+            <input 
+                type="password" 
+                id="newEngineerPassword" 
+                class="form-input-compact" 
+                placeholder="Password" 
+                required 
+                autocomplete="new-password">
+            
+            <button class="btn-add-compact" id="addEngineerBtn">
+                <i class="fas fa-user-plus"></i> Add
+            </button>
+        </div>
+
+        <!-- Error/Success Message -->
+        <div id="addUserMessage" class="form-message"></div>
+
+        <!-- Users Table (Scrollable) -->
+        <div class="users-table-scrollable">
+            <table class="users-table-compact">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Projects</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="6" class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading users...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right Column: Future KPI (Placeholder) -->
+    <div class="future-kpi-placeholder">
+        <div class="kpi-header">
+            <h2><i class="fas fa-chart-bar"></i> Analytics Dashboard</h2>
+        </div>
+        <div class="placeholder-content">
+            <i class="fas fa-chart-line" style="font-size: 64px; color: var(--border-color); margin-bottom: 20px;"></i>
+            <p style="color: var(--text-secondary); font-size: 16px; font-weight: 600;">Additional KPI Coming Soon</p>
+            <p style="color: var(--text-light); font-size: 14px;">This space will display advanced analytics</p>
+        </div>
+    </div>
+</section>
+
+        </div>
+    </main>
+
+    <script src="/js/manager-dashboard.js"></script>
+</body>
+</html>

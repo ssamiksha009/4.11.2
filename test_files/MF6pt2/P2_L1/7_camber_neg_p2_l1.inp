@@ -1,0 +1,38 @@
+*HEADING
+Camber negative
+restart from freeroll
+*******
+ UNITS: N, mm
+************************************************
+***SPEED 80 KMPH*********************************
+******************************************
+*RESTART,READ,WRITE,END STEP
+******************************************
+*STEP,INC=300,NLGEOM=YES,UNSYMM=YES
+ 2: CAMBER (5 degrees)
+*STEADY STATE TRANSPORT, INERTIA=YES
+ 0.1, 1.0
+**---------------------------------------------------
+*BOUNDARY, OP=NEW, FIXED
+ UPPER_RIM_REFERENCE_POINT, 1, 6
+ LOWER_RIM_REFERENCE_POINT, 1, 6
+*BOUNDARY, OP=NEW
+ ROAD_REFERENCE_POINT, 1, 2
+ ROAD_REFERENCE_POINT, 4, 4, -0.0871557427
+ ROAD_REFERENCE_POINT, 5, 6
+**---------------------------------------------------
+*OUTPUT, FIELD,var=pre,fre=1
+*CONTACT OUTPUT
+CDISP, CSTRESS, CNORMF, CNAREA, CSHEARF
+*OUTPUT, HISTORY, FREQUENCY=1
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+U, CF, RF, RM
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+RF, RM, U
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+RF, RM, U
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+CAREA 
+*restart,write,freq=100
+*END STEP
+*******************************************

@@ -1,0 +1,43 @@
+*HEADING
+ Braking 
+ restart after freeroll
+************************************************************************
+*RESTART,READ,WRITE,END STEP
+*parameter
+freeroll_velocity=61.11008993869967
+braking_velocity=freeroll_velocity - (freeroll_velocity* SR /100)
+************************************************************************
+*************** braking
+************************************************************************
+*STEP,INC=300,NLGEOM=YES,UNSYMM=YES
+ Braking
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.02, 1.0, , 0.02
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<braking_velocity>
+ LOWER_RIM_REFERENCE_POINT,<braking_velocity>
+ UPPER_RIM_REFERENCE_POINT,<braking_velocity>
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , 22222.22
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,FREQ=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+*****************************

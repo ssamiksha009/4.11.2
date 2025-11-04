@@ -1,0 +1,89 @@
+*HEADING
+axi symmetric
+************************************************************************
+*Include, input=../Hyperelastic_2.0_0425_fabric.inc
+*Include, input=../Hyperelastic_2.0_0425_rubber_mod.inc, password=apolloatr
+*Include, input=../parameters.inc
+*Include, input=../rim_complete.inc
+*Include, input=../0_axi_mesh_xpl.inp
+*Restart, Write, Overlay, Freq=0
+************ INITIAL CONDITIONS *****************
+*************************************************
+*INITIAL CONDITIONS, TYPE=TEMPERATURE
+WHOLE_REINFORCEMENT_N, 160.
+******************************************************************************
+** STEP1: COOLING STEP
+******************************************************************************
+*Step, Nlgeom=yes, Name=Position_Rim
+POSITIONING_RIM
+*Static, longterm
+0.1,1.0
+*model change, remove, type=contact pair
+UPPER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE
+LOWER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*TEMPERATURE
+WHOLE_REINFORCEMENT_N, 30.
+*Boundary, op=new
+SYBC,2,2
+SYBC,5,5
+RIM_REFERENCE_POINT,1,2
+RIM_REFERENCE_POINT,6,6
+UPPER_BEAD_NODES,1,1, 5.0
+UPPER_BEAD_NODES,2,2, <rimdisp_minus>
+LOWER_BEAD_NODES,1,1, 5.0
+LOWER_BEAD_NODES,2,2, <rimdisp_plus>
+*Output,field, ,VAR=PRESELECT
+*Element output,VAR=PRESELECT
+*ELEMENT OUTPUT, REBAR, DIRECTIONS=YES
+E, S, IVOL
+*NODE OUTPUT
+ U, COORD
+*Contact output
+cstress, cdisp
+*OUTPUT, HISTORY, VARIABLE=PRESELECT
+*End step
+******************************************************************************
+** STEP2: RIM MOUNTING
+******************************************************************************
+*STEP, Nlgeom=yes, Name=RIM_MOUNTING
+RIM_MOUNTING
+*Static, longterm
+0.2,1.0
+*Model change, add, type=contact pair
+UPPER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE
+LOWER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE
+*Boundary, op=new
+SYBC,2,2
+SYBC,5,5
+RIM_REFERENCE_POINT,1,2
+RIM_REFERENCE_POINT,6,6
+UPPER_BEAD_NODES,2,2, <rimdisp_minus>
+LOWER_BEAD_NODES,2,2, <rimdisp_plus>
+*End step
+******************************************************************************
+** STEP3: RIM MOUNTING2
+******************************************************************************
+*STEP, Nlgeom=yes, Name=RIM_MOUNTING2
+RIM_MOUNTING
+*Static, longterm
+0.2,1.0
+*Boundary, op=new
+SYBC,2,2
+SYBC,5,5
+RIM_REFERENCE_POINT,1,2
+RIM_REFERENCE_POINT,6,6
+*End step
+******************************************************
+******************************************************
+** STEP4: INFLATION
+******************************************************
+*STEP, NAME=INFLATION, NLGEOM=YES, UNSYMM=YES
+INFLATION ANALYSIS
+*Static, longterm
+.1, 1.
+*CONTROLS, ANALYSIS=DISCONTINUOUS	
+*Restart, Write, Frequency=99999
+*DSLOAD
+INNER_PRESSURE_SURFACE, P, <p2>
+*END STEP

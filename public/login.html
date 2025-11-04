@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Apollo Tyres R&D</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="split-container">
+        <div class="left-panel">
+            <div class="brand">
+                <img src="/images/Apollo-Tyres-Logo.png" alt="Apollo Tyres Logo" class="logo">
+                <h1>Tyre Virtualization Tool</h1>
+                <p class="tagline">Revolutionizing tire testing through advanced simulation</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="login-container">
+                <h2>Welcome Back</h2>
+                <p class="login-subtitle">Please enter your credentials to continue</p>
+
+                <form id="loginForm" method="post" action="#">
+                    <div class="form-group">
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" placeholder="Enter your password"
+                                required>
+                            <i class="fas fa-eye-slash toggle-password"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-extra">
+                        <label class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="forgot-password.html" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <div class="form-btn-group">
+                        <button type="submit" id="loginBtn" class="login-button">
+                            <span>Login</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div id="errorMessage" class="error-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/login.js"></script>
+</body>
+
+</html>

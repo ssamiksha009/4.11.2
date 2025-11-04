@@ -1,0 +1,20 @@
+*parameter
+ chamfer=2.0
+ cleat_end=cleat_start+cleat_width
+ cleat_h=cleat_height-chamfer
+ cleat_a=cleat_start+chamfer
+ cleat_b=cleat_end-chamfer
+*NODE, NSET=ROAD_REFERENCE_POINT
+ 4, 0, 0., -<road_pos>
+*SURFACE, TYPE=CYLINDER,NAME=ROAD_MASTER_SURFACE
+ 0, 0, -<road_pos>, 1, 0, -<road_pos>
+ 0, 1, -<road_pos>
+ START,-400, 0
+  LINE,  <cleat_start>, 0
+  LINE,  <cleat_start>, <cleat_h>
+  LINE,  <cleat_a>, <cleat_height>
+  LINE,  <cleat_b>, <cleat_height>
+  LINE,  <cleat_end>, <cleat_h>
+  LINE,  <cleat_end>,   0
+  LINE,  10000, 0
+*RIGID BODY, ANALYTICAL=ROAD_MASTER_SURFACE, REFNOD=ROAD_REFERENCE_POINT

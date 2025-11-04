@@ -1,0 +1,45 @@
+*HEADING
+ restart from freeroll
+************************************************************************
+*RESTART,READ,WRITE,END STEP
+************************************************************************
+************************************************************************
+*Include, input=parameters.inc
+*parameter
+freeroll_velocity=61.11008993869967	
+acc_velocity=freeroll_velocity + (freeroll_velocity* SR /100)
+************************************************************************
+*************** FREEROLL
+************************************************************************
+*STEP, NAME=Long_slip_acc_zero_camber,INC=300,NLGEOM=YES,UNSYMM=YES
+ FREEROLL
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.02, 1.0, , 0.02
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<acc_velocity>
+ LOWER_RIM_REFERENCE_POINT,<acc_velocity>
+ UPPER_RIM_REFERENCE_POINT,<acc_velocity>
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , <speed>
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,FREQ=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+ U, RF, V
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+ U, RF, V
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+*****************************

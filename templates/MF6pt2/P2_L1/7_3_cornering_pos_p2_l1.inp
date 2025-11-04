@@ -1,0 +1,106 @@
+*HEADING
+POSITIVE CORNERING 16 DEG
+restart from freeroll
+************************************************************
+*RESTART,READ,WRITE,END STEP
+**********************************************************
+************************************************************************
+*Include, input=parameters.inc
+************************************************************************
+*STEP,NAME=Pos_2deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (2 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <deg2_RP1>
+ROAD_REFERENCE_POINT,2, , -<deg2_RP2>
+*RESTART, WRITE, FREQUENCY=100
+*OUTPUT, FIELD, freq=1
+*ELEMENT OUTPUT
+ SENER, LE, S
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,NUMBER INTERVAL=10
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+ U, RF, V
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+ U, RF, V
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+********************************************************
+*STEP,NAME=Pos_4deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (4 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <4deg_RP1>
+ROAD_REFERENCE_POINT,2, , -<4deg_RP2>
+*END STEP
+********************************************************
+*STEP,NAME=Pos_6deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (6 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <6deg_RP1>
+ROAD_REFERENCE_POINT,2, , -<6deg_RP2>
+*END STEP
+********************************************************
+*STEP,NAME=Pos_8deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (8 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <8deg_RP1>
+ROAD_REFERENCE_POINT,2, , -<8deg_RP2>
+*END STEP
+********************************************************  
+*STEP,NAME=Pos_10deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (10 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <10deg_RP1>
+ROAD_REFERENCE_POINT,2, , -<10deg_RP2>
+*END STEP
+**************************************
+*STEP,NAME=Pos_12deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (12 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <12deg_RP1>
+ROAD_REFERENCE_POINT,2, , -<12deg_RP2>
+*END STEP
+********************************************************
+*STEP,NAME=Pos_14deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (14 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <14deg_RP1>
+ROAD_REFERENCE_POINT,2, , -<14deg_RP2>
+*END STEP
+********************************************************
+*STEP,NAME=Pos_16deg,NLGEOM=YES,UNSYMM=YES, CONVERT SDI=YES
+ SLIP (16 degrees)
+*STEADY STATE TRANSPORT,inertia=yes
+ 0.05, 1.0,,0.05
+*************************
+*MOTION,TYPE=VELOCITY, TRANSLATION
+ROAD_REFERENCE_POINT,1, , <16deg_RP1>
+ROAD_REFERENCE_POINT,2, , -<16deg_RP2>
+*END STEP
+********************************************************

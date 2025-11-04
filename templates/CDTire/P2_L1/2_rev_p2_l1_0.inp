@@ -1,0 +1,140 @@
+*HEADING
+revolve analysis with camber
+************************************************************************
+*Include, input=../parameters.inc
+*Include, input=1_axi_p2_growth.inc
+*parameter
+ road_initial_pos=(OD_inflated/2) +5
+ camber_angle=0*pi/180
+****************************************************************
+****************************************************************
+*SYMMETRIC MODEL GENERATION, REVOLVE, NODE=100000, ELEMENT=100000
+ 0.,0.,0.,0.,1.,0.
+ 0.,0.,1
+**************** 80 Sectors ******
+140.,15,,GENERAL
+20.,5,,GENERAL
+20.,20,,GENERAL
+20.,20,,GENERAL
+20.,5,,GENERAL
+140.,15,,GENERAL
+****************************************************************
+*SYMMETRIC RESULTS TRANSFER
+****************************************************************
+*NODE, NSET=ROAD_REFERENCE_POINT
+ 4, 0, 0., -<road_initial_pos>
+*SURFACE, TYPE=CYLINDER,NAME=ROAD_MASTER_SURFACE
+ 0, 0, -<road_initial_pos>,1, 0, -<road_initial_pos>
+ 0, 1, -<road_initial_pos>
+ START, -400, 0
+ LINE, 400,0
+*RIGID BODY, ANALYTICAL=ROAD_MASTER_SURFACE, REFNOD=ROAD_REFERENCE_POINT
+*CONTACT PAIR, INTERACTION=ROAD_TYRE, Type=surface to surface
+ TREAD_TOP_SURFACE, ROAD_MASTER_SURFACE
+*SURFACE INTERACTION, NAME=ROAD_TYRE
+*FRICTION
+ 0.0,
+*RESTART,WRITE,FREQ=100
+****************************************************************
+*****             EQUILLIBRIUM STEP, , ******
+****************************************************************
+*STEP, NAME=EQUILIBRIUM, inc=1000, NLGEOM=YES, UNSYM=YES
+ 1) EQULIBRIUM ANALYSIS
+*Static, longterm
+ 1.0, 1.0
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*****************************************************
+********* FRICTION CHNAGE ****************
+*****************************************************
+*CHANGE FRICTION, INTERACTION=RIM_TYRE
+*FRICTION
+ 1.0
+*CHANGE FRICTION, INTERACTION=ROAD_TYRE
+*FRICTION
+ 0.8
+*BOUNDARY, OP=NEW,FIXED
+ RIM_REFERENCE_POINT, 1, 3
+ RIM_REFERENCE_POINT, 4, 4
+ RIM_REFERENCE_POINT, 5, 6
+*BOUNDARY, OP=NEW
+ SYBC, 2,2
+ SYBC, 5,5
+ ROAD_REFERENCE_POINT, 1, 6
+*DSLOAD
+ INNER_PRESSURE_SURFACE, P, <p2>
+*********110psi
+****************************************************************
+****************** OUTPUT REQUEST ******************
+****************************************************************
+*RESTART, WRITE, FREQUENCY=100
+*OUTPUT, FIELD, FREQUENCY=1
+*ELEMENT OUTPUT 
+SENER, LE, S, IVOL, EVOL
+*ELEMENT OUTPUT, REBAR, DIRECTIONS=YES
+S, SENER, IVOL, RBFOR, RBANG
+*NODE OUTPUT
+U, RF, CF, COORD
+*CONTACT OUTPUT
+CDISP, CSTRESS
+*OUTPUT, HISTORY, FREQUENCY=1
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+U, CF, RF
+*NODE OUTPUT, NSET=RIM_REFERENCE_POINT
+RF
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+CAREA
+*ENERGY OUTPUT, VAR=PRE
+*END STEP
+****************************************************************
+***************   road rotate    ***************
+****************************************************************
+*STEP, NAME=CAMBER, inc=1000, NLGEOM=YES, UNSYM=YES
+ 2) CAMBER
+*Static, longterm
+ 0.5, 1.0
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*BOUNDARY, OP=NEW
+ RIM_REFERENCE_POINT, 1, 3
+ RIM_REFERENCE_POINT, 4, 4,<camber_angle>
+ RIM_REFERENCE_POINT, 5, 6
+*BOUNDARY, OP=NEW
+ ROAD_REFERENCE_POINT, 1, 6
+******* Disp. control load - 5% of section height *********
+*END STEP
+*************************************
+****************************************************************
+***************   TYRE ROAD CONTACT STEP     ***************
+****************************************************************
+*STEP, NAME=BRING_IN_CONTACT, inc=1000, NLGEOM=YES, UNSYM=YES
+ 3) BRING_IN_CONTACT
+*Static, longterm
+ 0.1, 1.0
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*BOUNDARY, OP=NEW
+ RIM_REFERENCE_POINT, 1, 3
+ RIM_REFERENCE_POINT, 4, 4,<camber_angle>
+ RIM_REFERENCE_POINT, 5, 6
+*BOUNDARY, OP=NEW
+ ROAD_REFERENCE_POINT, 1, 2
+ ROAD_REFERENCE_POINT, 3, 3, <section_height_5per>
+ ROAD_REFERENCE_POINT, 4, 6
+******* Disp. control load - 5% of section height *********
+*END STEP
+*************************************
+*STEP, NAME=LOADING_<l1>kg, inc=1000, NLGEOM=YES, UNSYM=YES
+ 4) LOADING_<l1>kg
+*Static, longterm
+ 0.1, 1.0
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*BOUNDARY, OP=NEW
+ RIM_REFERENCE_POINT, 1, 3
+ RIM_REFERENCE_POINT, 4, 4,<camber_angle>
+ RIM_REFERENCE_POINT, 5, 6
+*BOUNDARY, OP=NEW
+ ROAD_REFERENCE_POINT, 1, 2
+ ROAD_REFERENCE_POINT, 4, 4
+ ROAD_REFERENCE_POINT, 5, 6
+*CLOAD, OP=NEW
+ ROAD_REFERENCE_POINT, 3, <l1>
+*End Step
+*************************************

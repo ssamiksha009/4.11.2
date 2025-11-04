@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select - Apollo Tyres R&D</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/select.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <header class="main-header">
+    <div class="logo-container">
+        <img src="/images/Apollo-Tyres-Logo.png" alt="Apollo Tyres Logo" class="logo"
+            onclick="window.location.href='/index.html'" style="cursor: pointer;">
+    </div>
+    <h1 class="header-title">Tyre Virtualization Tool</h1>
+    <nav class="header-nav">
+        <button class="icon-btn" title="Home" onclick="window.location.href='/user-dashboard.html'">
+            <i class="fas fa-home"></i>
+        </button>
+        <button class="icon-btn" title="Back" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="icon-btn" id="refreshBtnSelect" title="Refresh" onclick="refreshPageSelect()">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="icon-btn" title="Help" onclick="window.open('/components/help.pdf', '_blank')">
+            <i class="fas fa-question-circle"></i>
+        </button>
+        <button class="icon-btn logout-btn" title="Logout" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </nav>
+</header>
+
+<main class="main-with-logs">
+  <!-- ✅ LEFT SIDEBAR: Live Logs (FIXED STRUCTURE) -->
+  <aside id="logs-sidebar" class="logs-sidebar">
+    <div class="logs-header">
+      <h3><i class="fas fa-file-alt"></i> Live Execution Logs</h3>
+      <div class="logs-controls">
+        <button id="refreshLogsSidebarBtn" class="btn-icon-small" title="Refresh logs">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <button id="clearLogsBtn" class="btn-icon-small" title="Clear logs">
+          <i class="fas fa-eraser"></i>
+        </button>
+        <!-- ✅ TOGGLE BUTTON WITH EXPLICIT ID -->
+        <button id="toggleLogsBtn" class="btn-icon-small" title="Collapse/Expand">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="logs-status">
+      <span id="logs-status-text">Idle</span>
+      <span id="logs-timestamp">--:--:--</span>
+    </div>
+    
+    <div id="logs-content" class="logs-content">
+      <div class="logs-empty">
+        <i class="fas fa-info-circle"></i>
+        <p>No logs available yet.</p>
+        <small>Logs will appear when you run test cases.</small>
+      </div>
+    </div>
+    
+    <div class="logs-footer">
+      <button id="downloadLogsBtn" class="btn-secondary-small" disabled>
+        <i class="fas fa-download"></i> Download
+      </button>
+      <button id="copyLogsSidebarBtn" class="btn-secondary-small" disabled>
+        <i class="fas fa-copy"></i> Copy
+      </button>
+    </div>
+  </aside>
+
+  <!-- RIGHT AREA: Protocol & Test Matrix (existing content) -->
+  <div class="test-matrix-area">
+    <!-- protocol title + total time aligned on same line -->
+    <div class="protocol-row">
+      <div id="protocol-title" class="protocol-title"></div>
+      <div id="total-time" class="total-time" aria-live="polite">
+        <span class="total-label">Total time taken:</span>
+        <span id="total-time-value">00:00:00</span>
+      </div>
+    </div>
+
+    <!-- Protocol controls (Run All, etc.) -->
+    <div class="protocol-controls">
+      <div class="controls-left">
+        <div class="controls-group">
+          <!-- NEW: Run using batch file button -->
+          <button id="runBatchFileBtn" class="control-btn batch-btn" title="Run all tests automatically using batch file">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+              <path d="M3 5h2v14H3z" fill="currentColor"/>
+            </svg>
+            <span>Run Batch File</span>
+          </button>
+          
+          <!-- NEW: View Batch File button -->
+          <button id="viewBatchFileBtn" class="control-btn view-batch-btn" title="View batch file content">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" fill="none"/>
+              <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2" fill="none"/>
+            </svg>
+            <span>View Batch</span>
+          </button>
+          
+          <button id="runAllBtn" class="control-btn" title="Run all tests sequentially">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 4v16l12-8L4 4z" fill="currentColor"/>
+              <rect x="18" y="5" width="2" height="14" rx="1" fill="currentColor"/>
+            </svg>
+            <span>Run All</span>
+          </button>
+
+          <button id="runSelectedBtn" class="control-btn disabled" title="Run selected tests" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 13h2v-2H3v2zm4 0h14v-2H7v2zM3 7h2V5H3v2z" fill="currentColor"/>
+            </svg>
+            <span>Run Selected</span>
+          </button>
+
+          <button id="pauseResumeBtn" class="control-btn" title="Pause / Resume queue" data-paused="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>
+            </svg>
+            <span>Pause</span>
+          </button>
+
+          <button id="abortQueueBtn" class="control-btn danger" title="Abort queued runs" style="display:none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Stop</span>
+          </button>
+
+          <button id="stopAllBtn" class="control-btn danger" title="Stop ALL running simulations">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6h12v12H6z" fill="currentColor"/>
+            </svg>
+            <span>Stop All</span>
+          </button>
+
+          <button id="retryFailedBtn" class="control-btn" title="Retry failed tests">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 6V3L8 7l4 4V8a4 4 0 110 8 4 4 0 01-4-4H6a6 6 0 106-6z" fill="currentColor"/>
+            </svg>
+            <span>Retry Failed</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="controls-right">
+        <div class="estimated-area" aria-hidden="false">
+          <small class="muted">ETA:</small>
+          <div id="queue-eta" class="eta-value">00:00:00</div>
+        </div>
+
+        <div class="live-area" aria-live="polite" title="Live run status">
+          <div class="live-summary" id="live-summary">Idle</div>
+          <div class="live-counts" id="live-counts">Queued: 0 • Running: 0 • Done: 0</div>
+          <div class="overall-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="overall-progress-bar" class="overall-progress-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test matrix table -->
+    <div id="data-container" class="table-area">
+      <!-- Add FTire table -->
+      <table id="ftireTable" class="data-table" style="display: none;">
+          <thead>
+              <tr>
+                  <th>S.No</th>
+                  <th>Test</th>
+                  <th>Load (N)</th>
+                  <th>IP (Kpa)</th>
+                  <th>Speed (kmph)</th>
+                  <th>Longitudinal Slip (%)</th>
+                  <th>Slip Angle (deg)</th>
+                  <th>Inclination Angle (deg)</th>
+                  <th>Cleat Orientation (deg)</th>
+                  <th>Status</th>
+                  <th>Run</th>
+                  <th>Tydex</th>
+              </tr>
+          </thead>
+          <tbody id="ftireTableBody"></tbody>
+      </table>
+
+      <!-- Add CDTire table -->
+      <table id="cdtireTable" class="data-table" style="display: none;">
+          <thead>
+              <tr>
+                  <th>No of Tests</th>
+                  <th>Test Name</th>
+                  <th>Inflation Pressure [bar]</th>
+                  <th>Velocity [km/h]</th>
+                  <th>Preload [N]</th>
+                  <th>Camber [Deg]</th>
+                  <th>Slip Angle [deg]</th>
+                  <th>Displacement [mm]</th>
+                  <th>Slip range [%]</th>
+                  <th>Cleat</th>
+                  <th>Road Surface</th>
+                  <th>Status</th>
+                  <th>Run</th>
+                  <th>Tydex</th>
+              </tr>
+          </thead>
+          <tbody id="cdtireTableBody"></tbody>
+      </table>
+
+      <!-- For MF 6.2 Data -->
+      <table id="mf62Table" class="data-table" style="display: none;">
+          <thead>
+              <tr>
+                  <th>Number of Tests</th>
+                  <th>Tests</th>
+                  <th>Inflation Pressure [PSI]</th>
+                  <th>Loads[Kg]</th>
+                  <th>Inclination Angle[°]</th>
+                  <th>Slip Angle[°]</th>
+                  <th>Slip Ratio [%]</th>
+                  <th>Test Velocity [Kmph]</th>
+                  <th>Status</th>
+                  <th>Run</th>
+                  <th>Tydex</th>
+              </tr>
+          </thead>
+          <tbody id="mf62TableBody"></tbody>
+      </table>
+
+      <!-- For MF 5.2 Data -->
+      <table id="mf52Table" class="data-table" style="display: none;">
+          <thead>
+              <tr>
+                  <th>Number Of Tests</th>
+                  <th>Tests</th>
+                  <th>Inflation Pressure [PSI]</th>
+                  <th>Loads[Kg]</th>
+                  <th>Inclination Angle[°]</th>
+                  <th>Slip Angle[°]</th>
+                  <th>Slip Ratio [%]</th>
+                  <th>Test Velocity [Kmph]</th>
+                  <th>Status</th>
+                  <th>Run</th>
+                  <th>Tydex</th>
+              </tr>
+          </thead>
+          <tbody id="mf52TableBody"></tbody>
+      </table>
+      
+      <!-- Add Custom table -->
+      <table id="customTable" class="data-table" style="display: none;">
+          <thead>
+              <tr>
+                  <th>No of Tests</th>
+                  <th>Tests</th>
+                  <th>Inflation Pressure [PSI]</th>
+                  <th>Loads [Kg]</th>
+                  <th>Inclination Angle [°]</th>
+                  <th>Slip Angle [°]</th>
+                  <th>Slip Ratio [%]</th>
+                  <th>Test Velocity [Kmph]</th>
+                  <th>Cleat Orientation [°]</th>
+                  <th>Displacement [mm]</th>
+                  <th>Status</th>
+                  <th>Run</th>
+                  <th>Tydex</th>
+              </tr>
+          </thead>
+          <tbody id="customTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ✅ TYDEX SIDEBAR (FIXED STRUCTURE) -->
+<aside id="tydex-sidebar" class="tydex-sidebar">
+  <div class="sidebar-header">
+    <h3>Previously Generated Tydex Files</h3>
+    <div class="tydex-controls" style="display: flex; gap: 6px;">
+      <button id="refresh-tydex-btn" class="btn-icon-small" title="Refresh list">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <!-- ✅ TOGGLE BUTTON WITH EXPLICIT ID AND VISIBLE STYLING -->
+      <button id="toggleTydexBtn" class="btn-icon-small" title="Collapse/Expand" style="display: flex !important; align-items: center; justify-content: center;">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+  
+  <div id="tydex-list" class="tydex-list">
+    <div class="loading">Loading...</div>
+  </div>
+  
+  <div class="tydex-preview">
+    <h4 id="tydex-preview-title">Preview</h4>
+    <textarea id="tydex-preview-box" readonly rows="18"></textarea>
+    <div class="preview-actions">
+      <button id="copy-tydex-btn" class="btn btn-sm" style="display:none">Copy</button>
+      <button id="download-tydex-btn" class="btn btn-sm" style="display:none">Download</button>
+    </div>
+  </div>
+</aside>
+
+<!-- Inserted: Batch file & Logs viewer modals -->
+<!-- Batch File Viewer Modal -->
+<div id="batchFileModal" class="file-viewer-modal" style="display: none;">
+  <div class="file-viewer-content">
+    <div class="file-viewer-header">
+      <h3>Batch File: <span id="batchFileName">run_all_tests.bat</span></h3>
+      <div class="file-viewer-actions">
+        <button id="copyBatchBtn" class="btn-icon" title="Copy to clipboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </button>
+        <button id="closeBatchModal" class="btn-icon" title="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="file-viewer-body">
+      <pre id="batchFileContent">Loading...</pre>
+    </div>
+  </div>
+</div>
+
+<!-- Logs Viewer Modal -->
+<div id="logsModal" class="file-viewer-modal" style="display: none;">
+  <div class="file-viewer-content">
+    <div class="file-viewer-header">
+      <h3>Project Logs: <span id="logFileName">Loading...</span></h3>
+      <div class="file-viewer-actions">
+        <button id="refreshLogsBtn" class="btn-icon" title="Refresh logs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 4V1L8 5l4 4V6a6 6 0 110 12 6 6 0 01-6-6H4a8 8 0 108-8z" fill="currentColor"/>
+          </svg>
+        </button>
+        <button id="copyLogsBtn" class="btn-icon" title="Copy to clipboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </button>
+        <button id="closeLogsModal" class="btn-icon" title="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="file-viewer-body">
+      <pre id="logsContent">Loading...</pre>
+    </div>
+  </div>
+</div>
+<footer>
+    <button id="completeProjectBtn" class="submit-button">Mark Project as Complete</button>
+    <button id="markInProgressBtn" class="submit-button" style="margin-left:12px;background:#f1c134;color:#000;">
+        Mark as In Progress
+    </button>
+</footer>
+    <script src="/js/select.js"></script>
+
+    <!-- run-timer must load after select.js so it can attach to row buttons -->
+    <script src="/js/run-timer.js"></script>
+
+
+  <!-- SSE client for live run status -->
+  <script src="/js/run-status.js"></script>
+</body>
+</html>

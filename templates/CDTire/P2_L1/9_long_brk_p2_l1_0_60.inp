@@ -1,0 +1,73 @@
+*HEADING
+ LONG SLIP  = -20%
+ UNITS: N, mm
+************************************************************************
+*RESTART,READ,STEP=5,END STEP
+************************************************************************
+************************************************************************
+*Include, input=../parameters.inc
+*Include, input=8_freeroll_p2_l1_0_60.fit
+*parameter
+slip_percentage=20
+brk_velocity= omegafr *(100 - slip_percentage) /100
+************************************************************************
+************************************************************************
+*STEP, NAME=freeroll,INC=300,NLGEOM=YES,UNSYMM=YES
+ freeroll
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.5, 1.0,
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<omegafr>
+ RIM_REFERENCE_POINT,<omegafr>
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , -<s3>
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S,IVOL
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT,NSET=RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+*****************************
+************************************************************************
+*STEP, NAME=Long_slip_traction,INC=300,NLGEOM=YES,UNSYMM=YES
+ Long_slip_traction
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.05, 1.0,,0.05
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<brk_velocity>
+ RIM_REFERENCE_POINT,<brk_velocity>
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , -<s3>
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=1
+*ELEMENT OUTPUT
+ SENER, LE, S,IVOL
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT,NSET=RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+*****************************

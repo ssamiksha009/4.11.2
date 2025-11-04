@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.F 5.2 - Apollo Tyres R&D</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/mf.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header class="main-header">
+    <div class="logo-container">
+        <img src="/images/Apollo-Tyres-Logo.png" alt="Apollo Tyres Logo" class="logo" onclick="window.location.href='/index.html'" style="cursor: pointer;">
+    </div>
+    <h1 class="header-title">Tyre Virtualization Tool</h1>
+    
+    <!-- Header Buttons -->
+    <div class="header-buttons">
+        <div class="header-btn-group">
+            <button class="protocol-header-btn" onclick="window.location.href='/user-dashboard.html'" title="Home">
+                <i class="fas fa-home"></i>
+            </button>
+            <button class="protocol-header-btn" onclick="window.history.back()" title="Back">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="protocol-header-btn" id="refreshBtn" onclick="refreshPage()" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        <div class="header-btn-group">
+            <button class="protocol-header-btn" onclick="window.open('/components/help.pdf', '_blank')" title="Help">
+                <i class="fas fa-question-circle"></i>
+            </button>
+            <button class="protocol-header-btn logout" id="logoutBtn" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+</header>
+    
+    <main>
+        <h2 class="page-title">M.F 5.2</h2>
+        
+        <!-- Input section - same as MF 6.2 -->
+        <div class="input-container">
+            <!-- Rim Width Input -->
+            <div class="input-group">
+                <h3>Rim Width</h3>
+                <div class="input-row">
+                    <label for="rimWidth">RW:</label>
+                    <input type="text" id="rimWidth" name="rimWidth" placeholder="Enter RW value in mm" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+                <h3>Rim Diameter</h3>
+                <div class="input-row">
+                    <label for="rimDiameter">RD:</label>
+                    <input type="text" id="rimDiameter" name="rimDiameter" placeholder="Enter RD value in mm" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+                <h3>Nominal Width</h3>
+                <div class="input-row">
+                    <label for="nominalWidth">NW:</label>
+                    <input type="text" id="nominalWidth" name="nominalWidth" placeholder="Enter NW value in mm" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+                <h3>Outer Diameter</h3>
+                <div class="input-row">
+                    <label for="outerDiameter">OD:</label>
+                    <input type="text" id="outerDiameter" name="outerDiameter" placeholder="Enter OD value in mm" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+            </div>
+
+            <!-- Pressure Inputs -->
+            <div class="input-group">
+                <h3>Pressure</h3>
+                <div class="input-row">
+                    <label for="p2">P2:</label>
+                    <input type="text" id="p2" name="p2" placeholder="Enter P2 value in psi" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+            </div>
+
+            <!-- Load Inputs -->
+            <div class="input-group">
+                <h3>Load</h3>
+                <div class="input-row">
+                    <label for="l1">L1:</label>
+                    <input type="text" id="l1" name="l1" placeholder="Enter L1 value in Kg" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+                <div class="input-row">
+                    <label for="l2">L2:</label>
+                    <input type="text" id="l2" name="l2" placeholder="Enter L2 value in Kg" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+                <div class="input-row">
+                    <label for="l3">L3:</label>
+                    <input type="text" id="l3" name="l3" placeholder="Enter L3 value in Kg" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+            </div>
+                        
+            <!-- Test Speed Input -->
+            <div class="input-group">
+                <h3>Test Speed</h3>
+                <div class="input-row">
+                    <label for="vel">VEL:</label>
+                    <input type="text" id="vel" name="vel" placeholder="Enter velocity in kmph" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+            </div>
+
+            <!-- Inclination Angle Input -->
+            <div class="input-group">
+                <h3>Inclination Angle</h3>
+                <div class="input-row">
+                    <label for="ia">IA:</label>
+                    <input type="text" id="ia" name="ia" placeholder="Enter IA value in degree" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+            </div>
+
+            <!-- Slip Angle Input -->
+            <div class="input-group">
+                <h3>Slip Angle</h3>
+                <div class="input-row">
+                    <label for="sa">SA:</label>
+                    <input type="text" id="sa" name="sa" placeholder="Enter SA value in degree" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+                <h3>Slip Ratio</h3>
+                <div class="input-row">
+                    <label for="sr">SR:</label>
+                    <input type="text" id="sr" name="sr" placeholder="Enter SR value in %" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+                <h3>Aspect Ratio</h3>
+                <div class="input-row">
+                    <label for="aspectRatio">AR:</label>
+                    <input type="text" id="aspectRatio" name="aspectRatio" placeholder="Enter AR value in %" pattern="[0-9]*\.?[0-9]+" required>
+                </div>
+            </div>
+
+            <!-- Add Mesh File Upload before the Error Message Container -->
+            <div class="input-group">
+                <h3>Mesh File</h3>
+                <div class="input-row file-upload">
+                    <input type="file" id="meshFile" name="meshFile" accept=".inp">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Message Container -->
+        <div id="errorMessage" class="error-message"></div>
+        
+        <!-- Test Summary Section -->
+        <div class="summary-container">
+            <h3 class="summary-title">Test Summary</h3>
+            <div id="testSummary" class="summary-content">
+                <!-- Summary data will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-container">
+            <button id="submitBtn" class="submit-button">Submit</button>
+        </div>
+        
+    </main>
+    
+    <footer>
+        <!-- Footer content will go here -->
+    </footer>
+
+
+    <script src="/js/mf52.js"></script>
+    <script src="/js/protocol-inputs.js"></script>
+
+<!-- ADD THIS BEFORE </body> in mf52.html -->
+<script src="/js/persist.js"></script>
+<script>
+const PROTOCOL = 'MF5.2';
+
+async function onMF52Computed(inputsObject, matrixObject, tydexName, tydexTextBlob) {
+  const projectId = window.currentProjectId || getProjectIdFromURL();
+  await persistDraftAndTydex(
+    projectId,
+    PROTOCOL,
+    inputsObject,
+    matrixObject,
+    [{ filename: tydexName, content: tydexTextBlob }]
+  );
+}
+
+document.getElementById('generate-mf52')?.addEventListener('click', async () => {
+  const inputsObject   = window.mf52Inputs;
+  const matrixObject   = window.mf52Matrix;
+  const tydexName      = window.mf52TydexName;
+  const tydexTextBlob  = window.mf52TydexText;
+  await onMF52Computed(inputsObject, matrixObject, tydexName, tydexTextBlob);
+});
+</script>
+<!-- insert before </body> on each protocol page -->
+<script src="/js/input-sidebar.js"></script>
+<script src="/js/protocol-common.js"></script>
+
+</body>
+</html>

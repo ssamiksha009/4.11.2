@@ -1,0 +1,126 @@
+*HEADING
+revolve analysis with Pressure 1 and load 1
+old job = axi_p1
+************************************************************************
+*Include, input=parameters.inc
+************************************************************************
+*SYMMETRIC MODEL GENERATION, REVOLVE, NODE=100000, ELEMENT=100000
+ 0.,0.,0.,0.,1.,0.
+ 0.,0.,1
+**************** 100 Sectors ******
+30.,30,,GENERAL
+10.,5,,GENERAL
+140.,15,,GENERAL
+140.,15,,GENERAL
+10.,5,,GENERAL
+30.,30,,GENERAL
+****************************************************************
+*SYMMETRIC RESULTS TRANSFER
+****************************************************************
+*NODE, NSET=ROAD_REFERENCE_POINT
+ 3, 0, 0., 378.82
+*SURFACE, TYPE=CYLINDER,NAME=ROAD_MASTER_SURFACE
+ 0, 0, 378.82,1, 0, 378.82
+ 0, 1, 378.82
+ START, 400, 0
+ LINE, -400,0
+*RIGID BODY, ANALYTICAL=ROAD_MASTER_SURFACE, REFNOD=ROAD_REFERENCE_POINT
+*CONTACT PAIR, INTERACTION=ROAD_TYRE, Type=surface to surface
+ TREAD_TOP_SURFACE, ROAD_MASTER_SURFACE
+*SURFACE INTERACTION, NAME=ROAD_TYRE
+*FRICTION
+ 0.0,
+*RESTART,WRITE,FREQ=100
+****************************************************************
+*****             EQUILLIBRIUM STEP, , ******
+****************************************************************
+*STEP, NAME=EQULIBRIUM, inc=1000, NLGEOM=YES, UNSYM=YES
+ 1) EQULIBRIUM ANALYSIS
+*STATIC
+ 1.0, 1.0
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*****************************************************
+********* FRICTION CHNAGE ****************
+*****************************************************
+*CHANGE FRICTION, INTERACTION=RIM_TYRE
+*FRICTION
+ 1.0
+*BOUNDARY, OP=NEW, FIXED
+ UPPER_RIM_REFERENCE_POINT, 1, 6
+ LOWER_RIM_REFERENCE_POINT, 1, 6
+*BOUNDARY, OP=NEW
+ SYBC, 2,2
+ SYBC, 5,5
+ ROAD_REFERENCE_POINT, 1, 6
+*DSLOAD
+ INNER_PRESSURE_SURFACE, P, <inflation_pressure1>
+****************************************************************
+****************** OUTPUT REQUEST ******************************
+****************************************************************
+*RESTART, WRITE, FREQUENCY=100
+*OUTPUT, FIELD, FREQUENCY=1
+*ELEMENT OUTPUT 
+SENER, LE, S, IVOL, EVOL
+*ELEMENT OUTPUT, REBAR, DIRECTIONS=YES
+S, SENER, IVOL, RBFOR, RBANG
+*NODE OUTPUT
+U, RF, CF
+*CONTACT OUTPUT
+CDISP, CSTRESS
+*OUTPUT, HISTORY, FREQUENCY=1
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+U, CF, RF
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+RF
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+RF
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+CAREA
+*ENERGY OUTPUT, VAR=PRE
+*END STEP
+****************************************************************
+***************   TYRE ROAD CONTACT STEP     ***************
+****************************************************************
+*STEP, NAME=BRING_IN_CONTACT, inc=1000, NLGEOM=YES, UNSYM=YES
+ 2) BRING_IN_CONTACT
+*STATIC
+ 0.1, 1.0
+*BOUNDARY
+ ROAD_REFERENCE_POINT, 3,3, -13.3
+******* Disp. control load - 15% of section height *********
+*OUTPUT, FIELD, FREQUENCY=100
+*ELEMENT OUTPUT 
+SENER, LE, S, IVOL, EVOL
+*ELEMENT OUTPUT, REBAR, DIRECTIONS=YES
+S, SENER
+*NODE OUTPUT
+U, RF, CF, COORD
+*CONTACT OUTPUT
+CDISP, CSTRESS
+*OUTPUT, HISTORY, FREQUENCY=1
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+U, CF, RF
+*NODE OUTPUT, NSET=LOWER_RIM_REFERENCE_POINT
+RF
+*NODE OUTPUT, NSET=UPPER_RIM_REFERENCE_POINT
+RF
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+CAREA
+*ENERGY OUTPUT, VAR=PRE
+*END STEP
+**************************************************************************
+************  FOOT PRINT LOADING - Load1 **************
+**************************************************************************
+*STEP, NAME=LOADING_1, inc=1000, NLGEOM=YES, UNSYM=YES
+ 3) LOADING_1
+*STATIC
+  0.1, 1.0
+*BOUNDARY, OP=NEW, FIXED
+ UPPER_RIM_REFERENCE_POINT, 1, 6
+ LOWER_RIM_REFERENCE_POINT, 1, 6
+*BOUNDARY, OP=NEW
+ ROAD_REFERENCE_POINT, 1, 2
+ ROAD_REFERENCE_POINT, 4, 6
+*CLOAD
+ ROAD_REFERENCE_POINT, 3, -<load1>
+*END STEP

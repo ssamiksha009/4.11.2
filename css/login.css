@@ -1,0 +1,274 @@
+/* Define color variables */
+:root {
+    --primary-color: #582C7C;
+    --secondary-color: #fa893e;
+    --text-color: #333;
+    --error-color: #d9534f;
+    --success-color: #28a745;
+    --background-color: #f8f9fa;
+    --input-border: #e1e1e1;
+    --shadow-color: rgba(88, 44, 124, 0.1);
+}
+
+/* Reset some basic elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background: var(--background-color);
+    /* Make the body take up the full viewport height */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header styling */
+.main-header {
+    background: linear-gradient(90deg, #542c7c 0%, #582C7C 60%, #fa893e 100%);
+    /* Purple color for Apollo Tyres */
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    position: relative;
+}
+
+/* Logo styling */
+.logo-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.logo {
+    max-width: 200px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header title styling */
+.header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 35px;
+    white-space: nowrap;
+}
+
+/* Main content area */
+main {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Split container for login page layout */
+.split-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Left panel styling */
+.left-panel {
+    flex: 1;
+    background: linear-gradient(135deg, #542c7c 0%, var(--primary-color) 50%, var(--secondary-color) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: white;
+}
+
+/* Brand styling in left panel */
+.brand {
+    text-align: center;
+}
+
+/* Tagline styling in left panel */
+.tagline {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-top: 1rem;
+}
+
+/* Right panel styling */
+.right-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--background-color);
+}
+
+/* Login container */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+}
+
+/* Removed the box properties:
+background: white;
+border-radius: 12px;
+box-shadow: 0 8px 24px var(--shadow-color);
+*/
+
+.login-container h2 {
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.login-subtitle {
+    color: #555;
+    margin-bottom: 2rem;
+}
+
+/* Form group */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon-wrapper i {
+    position: absolute;
+    left: 1rem;
+    color: #999;
+}
+
+.input-icon-wrapper .toggle-password {
+    left: auto;
+    right: 1rem;
+    cursor: pointer;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(88, 44, 124, 0.1);
+}
+
+.form-extra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Login button styling */
+.login-button {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary-color), #4a2569);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(88, 44, 124, 0.2);
+}
+
+.login-button:hover {
+    background: linear-gradient(135deg, #4a2569, var(--primary-color));
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(88, 44, 124, 0.3);
+}
+
+.login-button i {
+    transition: transform 0.3s ease;
+}
+
+.login-button:hover i {
+    transform: translateX(4px);
+}
+
+/* Error message styling */
+.error-message {
+    color: var(--error-color);
+    text-align: center;
+    font-weight: 500;
+    margin-top: 1rem;
+    min-height: 20px;
+}
+
+/* Footer styling */
+footer {
+    padding: 20px;
+    text-align: center;
+    margin-top: auto;
+}
+
+/* Responsive design for laptop screens */
+@media screen and (min-width: 1024px) and (max-width: 1920px) {
+    .login-container {
+        max-width: 500px;
+    }
+}
+
+/* Responsive design for tablets and mobile */
+@media screen and (max-width: 768px) {
+    .split-container {
+        flex-direction: column;
+    }
+
+    .left-panel {
+        padding: 2rem 1rem;
+    }
+
+    .right-panel {
+        padding: 2rem 1rem;
+    }
+
+    .login-container {
+        padding: 1.5rem;
+    }
+}

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Log - Apollo Tyres</title>
+    <link rel="stylesheet" href="/css/activity-log.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-tire"></i>
+                <h2>Apollo Tyres</h2>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="/user-dashboard.html">
+                        <i class="fas fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/index.html">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>New Project</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/my-projects.html">
+                        <i class="fas fa-folder-open"></i>
+                        <span>My Projects</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="/activity-log.html">
+                        <i class="fas fa-list-check"></i>
+                        <span>Activity Log</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="history.html">
+                    <i class="fas fa-history"></i>
+                    <span>Project History</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="\components\help.pdf" target="_blank">
+                        <i class="fas fa-circle-question"></i>
+                        <span>Help</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <p class="user-name" id="userName">Loading...</p>
+                    <p class="user-role" id="userRole">User</p>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="back-btn" onclick="window.location.href='/user-dashboard.html'">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Dashboard</span>
+                </button>
+                <div class="page-title">
+                    <h1><i class="fas fa-clock-rotate-left"></i> Activity Log</h1>
+                    <p class="page-subtitle">Track all your actions and system events</p>
+                </div>
+            </div>
+            <div class="top-bar-actions">
+    <button class="refresh-btn" id="refreshBtn" title="Refresh Activity Log">
+        <i class="fas fa-sync-alt"></i>
+    </button>
+    <button class="export-btn" id="exportBtn" title="Export to CSV">
+        <i class="fas fa-download"></i>
+    </button>
+    <div class="user-menu">
+        <span id="topBarUserName">User</span>
+        <div class="user-avatar-small">
+            <i class="fas fa-user"></i>
+        </div>
+    </div>
+    <button class="hamburger-menu-btn" id="hamburgerMenuBtn" title="User Details">
+        <i class="fas fa-bars"></i>
+    </button>
+</div>
+        </header>
+        <!-- User Details Panel -->
+<div class="user-details-panel" id="userDetailsPanel">
+    <div class="user-details-header">
+        <h3><i class="fas fa-user-circle"></i> User Information</h3>
+        <button class="close-panel-btn" id="closePanelBtn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="user-details-body" id="userDetailsBody">
+        <div class="loader">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p style="text-align: center; color: var(--text-secondary);">Loading user details...</p>
+    </div>
+</div>
+
+        <!-- Activity Log Container -->
+        <div class="activity-container">
+            <!-- Stats Summary -->
+            <section class="stats-summary">
+                <div class="stat-box stat-total">
+                    <div class="stat-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalActivities">0</h3>
+                        <p>Total Activities</p>
+                    </div>
+                </div>
+                <div class="stat-box stat-today">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="todayActivities">0</h3>
+                        <p>Today's Activities</p>
+                    </div>
+                </div>
+                <div class="stat-box stat-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="successActivities">0</h3>
+                        <p>Successful</p>
+                    </div>
+                </div>
+                <div class="stat-box stat-failed">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="failedActivities">0</h3>
+                        <p>Failed/Warnings</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter Section -->
+            <section class="filter-section">
+                <div class="filter-header">
+                    <h2><i class="fas fa-filter"></i> Filter Activities</h2>
+                    <button class="btn-reset-filters" id="resetFiltersBtn">
+                        <i class="fas fa-redo"></i> Reset Filters
+                    </button>
+                </div>
+                
+                <div class="filter-controls">
+                    <div class="search-box">
+    <label for="searchInput">
+        <i class="fas fa-search"></i> Search
+    </label>
+    <div style="position: relative;">
+        <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light);"></i>
+        <input type="text" id="searchInput" placeholder="Search activities..." style="padding-left: 45px;">
+    </div>
+</div>
+
+                    <div class="filter-group">
+                        <label for="activityTypeFilter">
+                            <i class="fas fa-tags"></i> Activity Type
+                        </label>
+                        <select id="activityTypeFilter">
+                            <option value="all">All Types</option>
+                            <option value="Authentication">Authentication</option>
+                            <option value="Project">Project Management</option>
+                            <option value="Protocol">Protocol & Input</option>
+                            <option value="Simulation">Simulation</option>
+                            <option value="File">File Management</option>
+                            <option value="System">System</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="statusFilter">
+                            <i class="fas fa-circle"></i> Status
+                        </label>
+                        <select id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="success">Success</option>
+                            <option value="failed">Failed</option>
+                            <option value="warning">Warning</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="dateRangeFilter">
+                            <i class="fas fa-calendar"></i> Date Range
+                        </label>
+                        <select id="dateRangeFilter">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">Last 7 Days</option>
+                            <option value="month">Last 30 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+
+                    <div class="date-range-inputs" id="customDateRange" style="display: none;">
+                        <input type="date" id="startDate" placeholder="Start Date">
+                        <input type="date" id="endDate" placeholder="End Date">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity Log Display -->
+            <section class="activity-display">
+                <div class="activity-header">
+                    <h2>
+                        <span>Activity Timeline</span>
+                        <span class="count-badge" id="displayCount">0</span>
+                    </h2>
+                    <div class="view-options">
+                        <button class="view-btn active" id="timelineViewBtn">
+                            <i class="fas fa-stream"></i> Timeline
+                        </button>
+                        <button class="view-btn" id="tableViewBtn">
+                            <i class="fas fa-table"></i> Table
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-container" id="loadingContainer">
+                    <div class="loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <p>Loading activity log...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>No Activities Found</h3>
+                    <p>No activities match your current filters.</p>
+                </div>
+
+                <!-- Timeline View -->
+                <div class="activity-timeline" id="activityTimeline">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+
+                <!-- Table View -->
+                <div class="activity-table-view" id="activityTableView" style="display: none;">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Activity ID</th>
+                                <th>Timestamp</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Device</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityTableBody">
+                            <!-- Dynamic rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="paginationContainer" style="display: none;">
+                    <button class="pagination-btn" id="prevPageBtn">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <div class="pagination-info">
+                        <span>Page <strong id="currentPage">1</strong> of <strong id="totalPages">1</strong></span>
+                        <span class="separator">|</span>
+                        <span>Showing <strong id="showingRange">0</strong> of <strong id="totalItems">0</strong> activities</span>
+                    </div>
+                    <button class="pagination-btn" id="nextPageBtn">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/js/activity-log.js"></script>
+</body>
+</html>

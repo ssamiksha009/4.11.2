@@ -1,0 +1,78 @@
+*HEADING
+ STEADYSTATE ROLLING ANALYSIS OF A TIRE:
+ old job = rev_p1_l1
+************************************************************************
+*Include, input=parameters.inc
+************************************************************************
+*NSET, NSET=WHOLE_TYRE
+WHOLE_RUBBER_N
+WHOLE_REINFORCEMENT_N
+*RESTART,READ,WRITE,END STEP
+************************************************************************
+*************** BRAKING
+************************************************************************
+*STEP, NAME=Braking,INC=300,NLGEOM=YES,UNSYMM=YES
+ 4:  BRAKING
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.5, 1.0
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+*CHANGE FRICTION,INTERACTION=ROAD_TYRE
+*FRICTION,SLIP=0.005
+1.2
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,59.44632
+ LOWER_RIM_REFERENCE_POINT,59.44632
+ UPPER_RIM_REFERENCE_POINT,59.44632
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , <speed>
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT,NSET=LOWER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=UPPER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+************************************************************************
+*************** TRACTION
+************************************************************************
+*STEP, NAME=Traction,INC=300,NLGEOM=YES,UNSYMM=YES
+ 5:  TRACTION
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.1, 1.0
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,64.70425
+ LOWER_RIM_REFERENCE_POINT,64.70425
+ UPPER_RIM_REFERENCE_POINT,64.70425
+*restart,write,freq=1
+*OUTPUT, FIELD,var=pre,fre=1
+*ELEMENT OUTPUT
+ SENER, LE, S
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT,NSET=LOWER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=UPPER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+************************************************************************

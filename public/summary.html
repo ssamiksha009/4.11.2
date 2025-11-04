@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project Summary - Apollo Tyres R&D</title>
+
+  <!-- your existing global styles -->
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/mf.css">
+
+  <!-- new, page-scoped polish -->
+  <link rel="stylesheet" href="/css/summary.css">
+</head>
+<body class="summary-page">
+<header class="main-header">
+  <div class="container header-inner">
+    <div class="logo-container">
+      <img src="/images/Apollo-Tyres-Logo.png" class="logo"
+           alt="Apollo Tyres Logo" onclick="window.location.href='/index.html'" style="cursor:pointer;">
+    </div>
+    <h1 class="header-title">Tyre Virtualization Tool</h1>
+    <button id="logoutBtn" class="logout-button">Logout</button>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <h2 class="page-title">Project Summary</h2>
+  </div>
+
+  <!-- Meta -->
+  <section class="card" id="meta"></section>
+
+  <!-- Params -->
+  <section class="card">
+    <div class="card-head">
+      <h3 class="summary-title">Saved Parameters</h3>
+    </div>
+    <div id="params" class="summary-content"></div>
+  </section>
+
+  <!-- Buttons row: Back (left, shifted right), Open in Protocol (right, shifted left) -->
+  <div class="cta" style="margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+    <button id="backToHistory" class="btn-back" style="margin-left:1cm;">← Back to History</button>
+    <button id="openProtocol" class="btn-gradient-nav" style="margin-right:1cm;">Open in Protocol</button>
+  </div>
+</main>
+
+<footer class="page-foot">
+  <div class="container foot-inner">
+    <span>© 2025 Apollo Tyres R&D. All rights reserved.</span>
+  </div>
+</footer>
+
+<style>
+  .btn-back {
+    background: #643e96; /* theme purple, no gradient  #6b2dbd*/
+    color: #fff;
+    border: 0;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 800;
+    letter-spacing: .2px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(107,45,189,.10);
+    transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+    margin-bottom: 8px;
+  }
+  .btn-back:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(107,45,189,.18);
+    background: #53209a; /* darker on hover */
+  }
+  .btn-back:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+
+  .btn-gradient-nav {
+    background: linear-gradient(90deg, #6b2dbd, #ff6a3d); /* navbar theme gradient */
+    color: #fff;
+    border: 0;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 800;
+    letter-spacing: .2px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(107,45,189,.12);
+    transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+  }
+  .btn-gradient-nav:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(107,45,189,.18);
+    opacity: 0.95;
+  }
+  .btn-gradient-nav:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+(function () {
+  // --- helpers ---
+  function fmtDate(x) {
+    if (!x) return '';
+    const d = new Date(x);
+    return isNaN(d.getTime()) ? String(x) : d.toLocaleString();
+  }
+  function authHeaders() {
+    const token = localStorage.getItem('authToken');
+    return token ? { 'Authorization': 'Bearer ' + token } : {};
+  }
+
+  // logout
+  document.getElementById('logoutBtn').onclick = function () {
+    localStorage.removeItem('authToken');
+    window.location.href = '/login.html';
+  };
+
+  // read projectId safely
+  const url = new URL(window.location.href);
+  const projectId = url.searchParams.get('projectId');
+
+  if (!projectId || projectId === 'undefined' || projectId === 'null') {
+    document.getElementById('meta').innerHTML =
+      '<div class="empty-state error">Missing or invalid projectId in URL.</div>';
+    document.getElementById('openProtocol').disabled = true;
+    return;
+  }
+
+  // fetch project
+  fetch(`/api/projects/${encodeURIComponent(projectId)}`, { headers: authHeaders() })
+    .then(r => {
+      if (!r.ok) throw new Error('Project not found');
+      return r.json();
+    })
+    .then(p => {
+      // META
+      const statusClass = (p.status || '').toLowerCase().replace(/\s+/g,'-');
+      document.getElementById('meta').innerHTML = `
+        <div class="meta-grid">
+          <div class="meta-block">
+            <div class="meta-line"><span class="k">ID</span><span class="v">${p.id}</span></div>
+            <div class="meta-line"><span class="k">Name</span><span class="v">${p.project_name || ''}</span></div>
+            <div class="meta-line"><span class="k">User</span><span class="v">${p.user_email || ''}</span></div>
+          </div>
+
+          <div class="meta-block">
+            <div class="meta-line"><span class="k">Region</span><span class="v">${p.region || ''}</span></div>
+            <div class="meta-line"><span class="k">Dept</span><span class="v">${p.department || ''}</span></div>
+            <div class="meta-line"><span class="k">Tyre Size</span><span class="v">${p.tyre_size || ''}</span></div>
+          </div>
+
+          <div class="meta-block">
+            <div class="meta-line">
+              <span class="k">Protocol</span>
+              <span class="chip">${p.protocol || ''}</span>
+            </div>
+            <div class="meta-line">
+              <span class="k">Status</span>
+              <span class="badge ${statusClass}">${p.status || ''}</span>
+            </div>
+            <div class="meta-line"><span class="k">Created</span><span class="v">${fmtDate(p.created_at || p.date_created)}</span></div>
+          </div>
+
+          <div class="meta-block">
+            <div class="meta-line"><span class="k">Completed</span><span class="v">${fmtDate(p.completed_at || p.date_completed)}</span></div>
+          </div>
+        </div>
+      `;
+
+      // PARAMS
+      const paramsDiv = document.getElementById('params');
+      const inputs = p.inputs || {};
+      if (!inputs || !Object.keys(inputs).length) {
+        paramsDiv.innerHTML = '<div class="empty-state">No saved parameters captured for this project.</div>';
+      } else {
+        const rows = Object.keys(inputs)
+          .sort()
+          .map(k => `<tr><td class="cell-k">${k}</td><td class="cell-v">${inputs[k]}</td></tr>`).join('');
+        paramsDiv.innerHTML = `
+          <div class="table-wrap">
+            <table class="kv-table">
+              <thead><tr><th>Field</th><th>Value</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // OPEN IN PROTOCOL
+      const map = { MF62:'mf.html', MF52:'mf52.html', FTire:'ftire.html', CDTire:'cdtire.html', Custom:'custom.html' };
+      const file = map[p.protocol] || 'custom.html';
+      document.getElementById('openProtocol').onclick = () => {
+        location.href = `/${file}?projectId=${encodeURIComponent(p.id)}`;
+      };
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('meta').innerHTML =
+        '<div class="empty-state error">Failed to load project (invalid id or API error).</div>';
+      document.getElementById('openProtocol').disabled = true;
+    });
+
+  document.getElementById('backToHistory').onclick = function () {
+    window.location.href = '/history.html';
+  };
+})();
+</script>
+</body>
+</html>

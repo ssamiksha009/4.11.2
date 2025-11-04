@@ -1,0 +1,44 @@
+*HEADING
+restart after camber rolling
+ STEADYSTATE ROLLING ANALYSIS OF A TIRE:
+ UNITS: N, mm
+************************************************************************
+*RESTART,READ,WRITE,END STEP
+*parameter
+freeroll_velocity=61.11008993869967
+************************************************************************
+************************************************************************
+*************** FREEROLL
+************************************************************************
+*STEP,INC=300,NLGEOM=YES,UNSYMM=YES
+ FREEROLL
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 1, 1.0
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+***********************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<freeroll_velocity>						
+ LOWER_RIM_REFERENCE_POINT,<freeroll_velocity>							
+ UPPER_RIM_REFERENCE_POINT,<freeroll_velocity>									
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , 22222.22
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT,NSET=LOWER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=UPPER_RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+*****************************

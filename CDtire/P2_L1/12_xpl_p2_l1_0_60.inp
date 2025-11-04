@@ -1,0 +1,127 @@
+** RESTART FILE: 03_FRR01E_*
+******************************************************
+**** EXPLICIT ROLLING ON DRUM WITH 2D CLEAT
+******************************************************
+******************************************************
+*Import, Update=No, state=Yes
+*Include, Input=../element_sets.inc
+******************************************************
+**----------------------------------------------------------------------
+** IMPORT ELSETS AND SURFACE DEFINITIONS FROM STANDARD
+**----------------------------------------------------------------------
+*Include, Input=./1_axi_p2_xpl_growth.inc
+*Include, input=./12_road_pos_p2_l1.inc
+*Include, input=./8_freeroll_p2_l1_0_60_xpl.fit
+*Include, input=../parameters.inc
+*parameter
+ v=s3
+ cleat_start=round(0.5*(2*(pi)* OD_undeformed/2))
+ step_time = ((pi)* OD_undeformed / s2)
+**********************
+*Include, Input=../road_cleat20x20.inc
+*Include, input=../parameters.inc
+*Include, input=../road_cleat.inp
+*Include, input=../rim_complete_rev.inc
+****************************************************************
+*Nset, nset=NALL
+WHOLE_RUBBER_N
+WHOLE_REINFORCEMENT_N
+********************************************
+*ELEMENT,TYPE=MASS,ELSET=MRIM
+7, 3
+*MASS,ELSET=MRIM
+ 0.0458
+*ELEMENT,TYPE=ROTARYI,ELSET=IRIM
+8, 3	
+*ROTARY INERTIA,ELSET=IRIM
+ 1000, 1000, 1000
+****************************************************************
+************************************************************
+*ELEMENT,TYPE=MASS,ELSET=MDRUM
+9, 4
+*ELEMENT, TYPE=ROTARYI, ELSET=IDRUM
+10, 4
+*MASS,ELSET=MDRUM
+0.13
+*ROTARY INERTIA, ELSET=IDRUM
+1.E-1, 1.E-1, 1.E-1
+****************************************************************
+*Contact
+*Contact Inclusions
+ TREAD_TOP_SURFACE, ROAD_MASTER_SURFACE
+ TREAD_TOP_SURFACE,TREAD_TOP_SURFACE
+ LOWER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE
+ UPPER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE
+ GROOVE1_SLAVE_SURFACE, GROOVE1_MASTER_SURFACE
+ GROOVE2_SLAVE_SURFACE, GROOVE2_MASTER_SURFACE
+ GROOVE3_SLAVE_SURFACE, GROOVE3_MASTER_SURFACE
+*Contact Property Assignment
+ TREAD_TOP_SURFACE, ROAD_MASTER_SURFACE, ROAD_TYRE
+ LOWER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE, RIM_TYRE
+ UPPER_RIM_SLAVE_SURFACE, RIM_MASTER_SURFACE, RIM_TYRE
+ TREAD_TOP_SURFACE,TREAD_TOP_SURFACE,SELF_AB
+ GROOVE1_SLAVE_SURFACE, GROOVE1_MASTER_SURFACE,SELF_AB
+ GROOVE2_SLAVE_SURFACE, GROOVE2_MASTER_SURFACE,SELF_AB
+ GROOVE3_SLAVE_SURFACE, GROOVE3_MASTER_SURFACE,SELF_AB
+*SURFACE INTERACTION, NAME=ROAD_TYRE
+*FRICTION
+ 1.0,
+*Surface Interaction, Name=RIM_TYRE
+*Friction
+1.0
+*SURFACE INTERACTION, NAME=SELF_AB
+ 1.,
+*FRICTION
+ 0.,
+****************************************************************
+*Amplitude, Name=instant
+ 0.0, 1.0,  1000.0,  1.0
+****************************************************************
+**   Initial Condition
+**
+*Initial Conditions, type=ROTATING VELOCITY
+nall, <omegafr>, 0., 0., 0., 
+0., 0., 0., 0., 1., 0., 
+*Initial Conditions, type=ROTATING VELOCITY
+RIM_REFERENCE_POINT, <omegafr>, 0., 0., 0., 
+0., 0., 0., 0., 1., 0., 
+*Initial Conditions, type=VELOCITY
+ ROAD_REFERENCE_POINT, 1, <v>
+****************************************************************
+**   Step : Explicit rolling in contact
+****************************************************************
+*Step
+*dynamic,explicit, element by element
+ ,<step_time>
+***,0.2
+*BULK VISCOSITY
+ 0.06, 1.2
+*Variable mass scaling, frequency=1, type=below min, dt=1.0e-6
+** dt=3.0e-8
+*Boundary, op=new, Amplitude=instant, type=velocity
+ RIM_REFERENCE_POINT, 1, 4
+ RIM_REFERENCE_POINT, 6, 6
+ ROAD_REFERENCE_POINT, 2, 2
+ ROAD_REFERENCE_POINT, 4, 4
+*Boundary, op=new, type=velocity
+ ROAD_REFERENCE_POINT, 1, , -<v>
+*Cload, op=new,, Amplitude=instant
+ ROAD_REFERENCE_POINT, 3, <l1>
+*Dsload, Amplitude=instant
+ INNER_PRESSURE_SURFACE, P, <p2>
+*********************************
+*Output, field, op=new,TIME MARKS=YES, time interval=5.0e-3
+*Element output
+ s,le
+*Node output
+ U
+*Contact output
+ cstress,,cdisp, fslip, fslipr
+*Output, history, op=new, time interval=1.0e-4
+*Node output, nset=ROAD_REFERENCE_POINT
+ A,U,V,RF,RM
+*Node output, nset=RIM_REFERENCE_POINT
+ A,U,V,RF,RM
+*ENERGY OUTPUT,VAR=PRE
+*End Step
+****************************************************************

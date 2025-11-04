@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Projects - Apollo Tyres Manager</title>
+    <link rel="stylesheet" href="/css/all-projects.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- ============================================
+         SIDEBAR NAVIGATION
+         ============================================ -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <h2>Manager Portal</h2>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="/manager-dashboard.html">
+                        <i class="fas fa-columns"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/activity-monitor.html">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Activity Monitor</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="/all-projects.html">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>All Projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/activity-log.html">
+                        <i class="fas fa-list-check"></i>
+                        <span>System Logs</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/index.html">
+                        <i class="fas fa-cogs"></i>
+                        <span>Tyre Virtualization</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/reset-password.html">
+                        <i class="fas fa-key"></i>
+                        <span>Reset Password</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/components/help.pdf" target="_blank">
+                        <i class="fas fa-circle-question"></i>
+                        <span>Help</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="manager-profile">
+                <div class="manager-avatar" id="managerAvatar">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="manager-info">
+                    <p class="manager-name" id="managerName">Loading...</p>
+                    <p class="manager-role">Manager</p>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ============================================
+         MAIN CONTENT AREA
+         ============================================ -->
+    <main class="main-content">
+        <!-- Top Navigation Bar -->
+        <header class="top-bar">
+            <div class="breadcrumbs">
+                <i class="fas fa-project-diagram"></i>
+                <span>All Projects</span>
+            </div>
+            <div class="top-bar-actions">
+    <button class="action-btn btn-secondary" id="refreshBtn" title="Refresh Data">
+        <i class="fas fa-sync-alt"></i>
+        Refresh
+    </button>
+    <button class="action-btn btn-secondary" id="userMenuBtn" title="User Information">
+        <i class="fas fa-bars"></i>
+    </button>
+</div>
+        </header>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+            <!-- Page Header -->
+            <section class="page-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-project-diagram"></i> All Projects Overview</h1>
+                    <p>Monitor and manage all projects across all engineers</p>
+                </div>
+                <div class="header-meta">
+                    <div class="last-updated">
+                        <i class="fas fa-clock"></i>
+                        <span>Last updated: <strong id="lastUpdated">Never</strong></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- KPI Cards Section (4 Cards) -->
+            <section class="kpi-cards-grid">
+                <div class="kpi-card kpi-total-projects">
+                    <div class="kpi-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Total Projects</p>
+                        <h3 class="kpi-value" id="totalProjects">0</h3>
+                        <p class="kpi-change">
+                            <i class="fas fa-info-circle"></i> All-time
+                        </p>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-pending-projects">
+                    <div class="kpi-icon">
+                        <i class="fas fa-pause-circle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Pending Projects</p>
+                        <h3 class="kpi-value" id="pendingProjects">0</h3>
+                        <p class="kpi-change negative">
+                            <i class="fas fa-circle"></i> Not Started
+                        </p>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-active-projects">
+                    <div class="kpi-icon">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Active Projects</p>
+                        <h3 class="kpi-value" id="activeProjects">0</h3>
+                        <p class="kpi-change warning">
+                            <i class="fas fa-circle"></i> In Progress
+                        </p>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-completed-projects">
+                    <div class="kpi-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <p class="kpi-label">Completed Projects</p>
+                        <h3 class="kpi-value" id="completedProjects">0</h3>
+                        <p class="kpi-change positive">
+                            <i class="fas fa-chart-line"></i> <span id="completionRate">0%</span> Rate
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filters Section -->
+            <section class="filters-section">
+                <div class="filters-header">
+                    <h3><i class="fas fa-filter"></i> Filters</h3>
+                    <button class="btn-clear-filters" id="clearFiltersBtn">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label><i class="fas fa-search"></i> Search</label>
+                        <input type="text" id="searchInput" placeholder="Project name, engineer, tyre size..." autocomplete="off">
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-list"></i> Status</label>
+                        <select id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-code-branch"></i> Protocol</label>
+                        <select id="protocolFilter">
+                            <option value="all">All Protocols</option>
+                            <option value="MF62">MF62</option>
+                            <option value="MF52">MF52</option>
+                            <option value="FTire">FTire</option>
+                            <option value="CDTire">CDTire</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-user"></i> Engineer</label>
+                        <select id="engineerFilter">
+                            <option value="all">All Engineers</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-building"></i> Department</label>
+                        <select id="departmentFilter">
+                            <option value="all">All Departments</option>
+                        </select>
+                    </div>
+                    <div class="filter-group filter-actions">
+                        <button class="btn-apply-filters" id="applyFiltersBtn">
+                            <i class="fas fa-check"></i> Apply
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section (3 Charts) -->
+            <section class="charts-section">
+                <!-- Projects by Department -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-building"></i> Projects by Department</h3>
+                        <button class="btn-icon" onclick="refreshCharts()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Projects by Engineer -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-users"></i> Projects by Engineer</h3>
+                        <button class="btn-icon" onclick="refreshCharts()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="engineerChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Projects Timeline -->
+                <div class="chart-card chart-full-width">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Projects Timeline (Last 6 Months)</h3>
+                        <button class="btn-icon" onclick="refreshCharts()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Projects Section (Manager's Own Projects) -->
+<section class="my-projects-section">
+    <div class="section-header">
+        <h2><i class="fas fa-user-check"></i> My Projects</h2>
+        <div class="view-toggle-wrapper">
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="grid" id="myProjectsGridBtn">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="view-btn" data-view="list" id="myProjectsListBtn">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Grid View -->
+    <div class="my-projects-grid" id="myProjectsGrid">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading your projects...</p>
+        </div>
+    </div>
+    
+    <!-- List View -->
+    <div class="my-projects-list" id="myProjectsList" style="display: none;">
+        <table class="projects-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Project Name</th>
+                    <th>Protocol</th>
+                    <th>Status</th>
+                    <th>Department</th>
+                    <th>Region</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="myProjectsTableBody">
+                <tr>
+                    <td colspan="8" class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+            <!-- Projects Table Section -->
+            <section class="projects-table-section">
+                <div class="table-header">
+                    <h3><i class="fas fa-table"></i> Projects List</h3>
+                    <div class="table-info">
+                        <span id="tableInfo">Showing 0 projects</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="projects-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Project Name</th>
+                                <th>Engineer</th>
+                                <th>Protocol</th>
+                                <th>Status</th>
+                                <th>Department</th>
+                                <th>Region</th>
+                                <th>Tyre Size</th>
+                                <th>Created</th>
+                                <th>Completed</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectsTableBody">
+                            <tr>
+                                <td colspan="11" class="loading-spinner">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Loading projects...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        <span id="paginationInfo">Page 1 of 1</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="btn-page" id="firstPageBtn" disabled>
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button class="btn-page" id="prevPageBtn" disabled>
+                            <i class="fas fa-angle-left"></i> Previous
+                        </button>
+                        <div class="page-numbers" id="pageNumbers"></div>
+                        <button class="btn-page" id="nextPageBtn">
+                            Next <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button class="btn-page" id="lastPageBtn">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                    <div class="items-per-page">
+                        <label>Items per page:</label>
+                        <select id="itemsPerPage">
+                            <option value="10">10</option>
+                            <option value="25" selected>25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+                <!-- ============================================
+         USER INFORMATION SIDEBAR
+         ============================================ -->
+    <div class="sidebar-overlay" id="userInfoOverlay" onclick="closeUserInfoSidebar()"></div>
+    <aside class="user-info-sidebar" id="userInfoSidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user-circle"></i> User Information</h3>
+            <button class="sidebar-close" onclick="closeUserInfoSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-body" id="userInfoContent">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading user information...</p>
+            </div>
+        </div>
+    </aside>
+        </div>
+    </main>
+
+    <!-- ============================================
+         PROJECT DETAILS MODAL/SIDEBAR
+         ============================================ -->
+    <div class="sidebar-overlay" id="projectDetailsOverlay" onclick="closeProjectDetails()"></div>
+    <aside class="project-details-sidebar" id="projectDetailsSidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-info-circle"></i> Project Details</h3>
+            <button class="sidebar-close" onclick="closeProjectDetails()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-body" id="projectDetailsContent">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading project details...</p>
+            </div>
+        </div>
+    </aside>
+
+        <!-- Rename Project Modal -->
+    <div class="custom-modal-overlay" id="renameModalOverlay"></div>
+    <div class="custom-modal" id="renameModal">
+        <div class="custom-modal-header">
+            <h3><i class="fas fa-edit"></i> Rename Project</h3>
+            <button class="custom-modal-close" onclick="closeRenameModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="custom-modal-body">
+            <label for="newProjectName">Enter new project name:</label>
+            <input type="text" id="newProjectName" class="custom-input" placeholder="Project name...">
+            <small class="input-hint">Minimum 3 characters required</small>
+        </div>
+        <div class="custom-modal-footer">
+            <button class="btn-cancel" onclick="closeRenameModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn-confirm" onclick="confirmRename()">
+                <i class="fas fa-check"></i> Rename
+            </button>
+        </div>
+    </div>
+
+    <!-- Mark as Completed Confirmation Modal -->
+    <div class="custom-modal-overlay" id="completedModalOverlay"></div>
+    <div class="custom-modal" id="completedModal">
+        <div class="custom-modal-header">
+            <h3><i class="fas fa-check-circle"></i> Mark as Completed</h3>
+            <button class="custom-modal-close" onclick="closeCompletedModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="custom-modal-body">
+            <div class="confirmation-message">
+                <i class="fas fa-question-circle"></i>
+                <p>Are you sure you want to mark this project as completed?</p>
+                <small>This will change the project status to "Completed"</small>
+            </div>
+        </div>
+        <div class="custom-modal-footer">
+            <button class="btn-cancel" onclick="closeCompletedModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn-confirm" onclick="confirmMarkCompleted()">
+                <i class="fas fa-check"></i> Yes, Mark as Completed
+            </button>
+        </div>
+    </div>
+
+    <!-- Archive Project Confirmation Modal -->
+    <div class="custom-modal-overlay" id="archiveModalOverlay"></div>
+    <div class="custom-modal" id="archiveModal">
+        <div class="custom-modal-header">
+            <h3><i class="fas fa-archive"></i> Archive Project</h3>
+            <button class="custom-modal-close" onclick="closeArchiveModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="custom-modal-body">
+            <div class="confirmation-message">
+                <i class="fas fa-exclamation-triangle" style="color: #f39c12;"></i>
+                <p>Are you sure you want to archive this project?</p>
+                <small>Archived projects can be restored later</small>
+            </div>
+        </div>
+        <div class="custom-modal-footer">
+            <button class="btn-cancel" onclick="closeArchiveModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn-confirm" onclick="confirmArchive()">
+                <i class="fas fa-archive"></i> Yes, Archive
+            </button>
+        </div>
+    </div>
+
+    <!-- Delete Project Confirmation Modal -->
+    <div class="custom-modal-overlay" id="deleteModalOverlay"></div>
+    <div class="custom-modal" id="deleteModal">
+        <div class="custom-modal-header" style="background: #e74c3c;">
+            <h3 style="color: white;"><i class="fas fa-trash"></i> Delete Project</h3>
+            <button class="custom-modal-close" onclick="closeDeleteModal()" style="color: white;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="custom-modal-body">
+            <div class="confirmation-message">
+                <i class="fas fa-exclamation-circle" style="color: #e74c3c; font-size: 48px;"></i>
+                <p style="font-weight: 700; color: #e74c3c;">Are you sure you want to DELETE this project?</p>
+                <small style="color: #e74c3c;">⚠️ This action cannot be undone! All project data will be permanently deleted.</small>
+            </div>
+        </div>
+        <div class="custom-modal-footer">
+            <button class="btn-cancel" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn-confirm" onclick="confirmDelete()" style="background: #e74c3c;">
+                <i class="fas fa-trash"></i> Yes, Delete Permanently
+            </button>
+        </div>
+    </div>
+
+    <script src="/js/all-projects.js"></script>
+</body>
+</html>

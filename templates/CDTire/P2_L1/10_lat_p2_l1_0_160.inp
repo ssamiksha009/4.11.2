@@ -1,0 +1,94 @@
+*HEADING
+************************************************************************
+*RESTART,READ,STEP=5,END STEP
+************************************************************************
+************************************************************************
+************************************************************************
+*Include, input=../parameters.inc
+*Include, input=8_freeroll_p2_l1_0_160.fit
+*parameter
+ period=2.0*pi
+ slip_angle_deg=-15
+ slip_angle=slip_angle_deg*pi/180
+ v=s5
+ vy=v*sin(slip_angle)
+ A0=(1+cos(slip_angle))/2
+ A2=(1-cos(slip_angle))/2
+***** Amplitudes *****
+*Amplitude, name=road_x, definition=PERIODIC
+ 2,  <period>,              0.,              <A0>
+ 0., 0., <A2>, 0.
+*Amplitude, name=road_y, definition=PERIODIC
+ 1,  <period>,               0.,              0.
+ 0., 1.
+************************************************************************
+*STEP, NAME=freeroll,INC=300,NLGEOM=YES,UNSYMM=YES
+ freeroll
+*STEADY STATE TRANSPORT,INERTIA=YES
+ 0.5, 1.0,
+************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+************************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<omegafr>
+ RIM_REFERENCE_POINT,<omegafr>
+*MOTION,TYPE=VELOCITY,TRANSLATION
+ ROAD_REFERENCE_POINT, 1, , -<v>
+*restart,write,freq=100
+*OUTPUT, FIELD,var=pre,fre=100
+*ELEMENT OUTPUT
+ SENER, LE, S,IVOL
+*NODE OUTPUT
+ RF, CF, U
+*CONTACT OUTPUT
+ CDISP, CSTRESS, CFORCE, CNAREA
+*OUTPUT, HISTORY,freq=1
+*CONTACT OUTPUT, SURFACE=TREAD_TOP_SURFACE
+ CAREA
+*NODE OUTPUT,NSET=RIM_REFERENCE_POINT
+ U, RF
+*NODE OUTPUT,NSET=ROAD_REFERENCE_POINT
+ U, RF
+*END STEP
+*****************************
+******************************************
+*** CORNERING *****************************
+*******************************************
+*STEP,INC=300,NLGEOM=YES,UNSYMM=YES
+ 6:  CORNERING <slip_angle>DEG
+*STEADY STATE TRANSPORT, INERTIA=YES
+0.01, 1.0
+**********************************************************
+** CONTROL PARAMETERS*************************************
+**********************************************************
+*CONTROLS, ANALYSIS=DISCONTINUOUS
+**********************************************************
+** ROAD MOTION *******************************************
+**********************************************************
+*TRANSPORT VELOCITY
+ WHOLE_TYRE,<omegafr>
+ RIM_REFERENCE_POINT,<omegafr>
+*MOTION,TYPE=VELOCITY,TRANSLATION, amp=road_x
+ ROAD_REFERENCE_POINT,1,1, -<v>
+*MOTION,TYPE=VELOCITY,TRANSLATION, amp=road_y
+ ROAD_REFERENCE_POINT,2,2, <vy>
+**********************************************************
+*OUTPUT, FIELD,var=pre,fre=1
+*NODE OUTPUT
+U,
+*ELEMENT OUTPUT
+ECDDEN,
+*CONTACT OUTPUT
+CSTRESS
+*OUTPUT, HISTORY, NUMBER INTERVAL=40
+*CONTACT OUTPUT
+CAREA
+*NODE OUTPUT, NSET=RIM_REFERENCE_POINT
+U, RF
+*NODE OUTPUT, NSET=ROAD_REFERENCE_POINT
+U, RF 
+*ENERGY OUTPUT,VARIABLE=PRESELECT
+ALLCD, ALLIE
+*restart,write,freq=100
+*END STEP
+*******************************************
